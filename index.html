@@ -1,982 +1,1010 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ERBA LIMS – Pathology Lab Management Software</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,600;1,600&display=swap&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,600;1,600&display=swap" rel="stylesheet"></noscript>
+
 <style>
-  :root {
-    /* ── CareData Exact Brand Palette ── */
-    --purple-accent:  #6A3DAA;   /* top accent bar */
-    --brand:          #4C6693;   /* primary brand / hero bg */
-    --brand-dark:     #2F4F7F;   /* nav text / darker shade */
-    --brand-deeper:   #243D62;   /* hero gradient deep */
-    --page-bg:        #F5F6F8;   /* light grey page bg */
-    --white:          #FFFFFF;
+.erba-lims * { box-sizing: border-box !important; margin: 0 !important; padding: 0 !important; }
+.erba-lims a { text-decoration: none !important; }
+.erba-lims ul { list-style: none !important; }
+.erba-lims { font-family: 'Raleway', Arial, sans-serif !important; color: #1C2B40 !important; overflow-x: hidden !important; width: 100% !important; }
 
-    /* ── Supporting palette ── */
-    --blue-cta:       #1A6FC4;   /* CTA buttons — readable on brand bg */
-    --blue-cta-hover: #155DA0;
-    --blue-light:     #E3EBF6;
-    --teal:           #00A896;
-    --teal-light:     #E0F5F3;
-    --ink:            #1C2B40;
-    --slate:          #4A5568;
-    --border:         #D0D7E3;
-    --border-light:   #E8ECF2;
-    --yellow:         #F6C90E;
-    --red-bg:         #FFF5F5;
-    --red-border:     #FDDCDC;
+@keyframes erba-blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+@keyframes erba-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes erba-fadeup { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
 
-    --r:    10px;
-    --r-lg: 18px;
-  }
+.erba-lims .el-hero {
+  position: relative !important; overflow: hidden !important;
+  padding: 72px 5vw 88px !important;
+  background: linear-gradient(148deg, #243D62 0%, #4C6693 55%, #3D618F 100%) !important;
+  width: 100% !important;
+}
+.erba-lims .el-hero::before {
+  content: '' !important; position: absolute !important; inset: 0 !important; pointer-events: none !important;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px) !important;
+  background-size: 36px 36px !important;
+}
+.erba-lims .el-hero::after {
+  content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; height: 4px !important;
+  background: linear-gradient(90deg, #6A3DAA, #9B6DD6, #6A3DAA) !important;
+}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Raleway', sans-serif;
-    background: var(--page-bg);
-    color: var(--ink);
-    overflow-x: hidden;
-  }
+.erba-lims .el-blob {
+  position: absolute !important; border-radius: 50% !important;
+  filter: blur(80px) !important;
+  pointer-events: none !important;
+  will-change: transform !important;
+  contain: strict !important;
+}
+.erba-lims .el-blob-1 { width: 480px !important; height: 480px !important; background: rgba(106,61,170,0.22) !important; top: -120px !important; right: -60px !important; }
+.erba-lims .el-blob-2 { width: 370px !important; height: 370px !important; background: rgba(26,111,196,0.18) !important; bottom: -80px !important; left: 8% !important; }
 
-  /* ════════════════════════════════════════
-     HERO
-  ════════════════════════════════════════ */
-  .hero {
-    position: relative; overflow: hidden;
-    padding: 76px 5vw 88px;
-    background: linear-gradient(148deg, var(--brand-deeper) 0%, var(--brand) 55%, #3D618F 100%);
-  }
-  /* Purple top accent bar — matching CareData header */
-  .hero::after {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, var(--purple-accent), #9B6DD6, var(--purple-accent));
-  }
-  /* Subtle dot grid */
-  .hero::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none;
-    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
-    background-size: 36px 36px;
-  }
-  /* Glow blobs */
-  .hb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
-  .hb1 { width: 500px; height: 500px; background: rgba(106,61,170,0.22); top: -120px; right: -60px; }
-  .hb2 { width: 380px; height: 380px; background: rgba(26,111,196,0.18); bottom: -80px; left: 8%; }
+.erba-lims .el-hero-inner {
+  position: relative !important; max-width: 1160px !important; margin: 0 auto !important;
+  display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 60px !important; align-items: center !important;
+}
 
-  .hero-inner {
-    position: relative; max-width: 1160px; margin: 0 auto;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
-  }
+.erba-lims .el-badge {
+  display: inline-flex !important; align-items: center !important; gap: 8px !important;
+  background: rgba(255,255,255,0.13) !important; color: #C5D8F5 !important;
+  border: 1px solid rgba(255,255,255,0.24) !important;
+  font-size: 0.73rem !important; font-weight: 700 !important; letter-spacing: 0.8px !important;
+  text-transform: uppercase !important; padding: 6px 14px !important; border-radius: 100px !important;
+  margin-bottom: 20px !important;
+}
+.erba-lims .el-dot {
+  width: 7px !important; height: 7px !important; background: #4ADE80 !important;
+  border-radius: 50% !important; display: inline-block !important;
+  animation: erba-blink 1.6s infinite !important;
+}
 
-  /* Badge */
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.12); color: #C5D8F5;
-    border: 1px solid rgba(255,255,255,0.22);
-    font-size: 0.74rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
-    padding: 6px 14px; border-radius: 100px; margin-bottom: 20px;
-    backdrop-filter: blur(6px);
-  }
-  .hero-badge .dot {
-    width: 7px; height: 7px; background: #4ADE80; border-radius: 50%;
-    animation: blink 1.6s infinite;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+.erba-lims .el-h1 {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-size: clamp(2rem, 4vw, 3.3rem) !important;
+  line-height: 1.14 !important; color: #FFFFFF !important; margin-bottom: 18px !important; font-weight: 600 !important;
+}
+.erba-lims .el-h1 em { font-style: italic !important; color: #A8C8F0 !important; }
 
-  h1 {
-    font-family: 'Source Serif 4', serif;
-    font-size: clamp(2.1rem, 4vw, 3.3rem);
-    line-height: 1.14; letter-spacing: -0.2px;
-    color: var(--white); margin-bottom: 18px;
-  }
-  h1 em { font-style: italic; color: #A8C8F0; }
+.erba-lims .el-hero-sub {
+  font-size: 0.97rem !important; color: rgba(255,255,255,0.74) !important;
+  line-height: 1.78 !important; margin-bottom: 32px !important; max-width: 470px !important;
+}
 
-  .hero-sub {
-    font-size: 0.98rem; color: rgba(255,255,255,0.75);
-    line-height: 1.78; margin-bottom: 34px; max-width: 470px;
-  }
+.erba-lims .el-cta-group { display: flex !important; gap: 12px !important; flex-wrap: wrap !important; margin-bottom: 0 !important; }
 
-  /* Hero CTAs */
-  .hero-cta-group { display: flex; gap: 12px; flex-wrap: wrap; }
+.erba-lims .el-btn-primary {
+  background: #1A6FC4 !important; color: #FFFFFF !important;
+  padding: 13px 26px !important; border-radius: 10px !important;
+  font-size: 0.88rem !important; font-weight: 700 !important;
+  display: inline-flex !important; align-items: center !important; gap: 8px !important;
+  box-shadow: 0 4px 16px rgba(26,111,196,0.4) !important;
+  transition: background 0.2s, transform 0.15s !important;
+  border: none !important; cursor: pointer !important;
+}
+.erba-lims .el-btn-primary:hover { background: #155DA0 !important; transform: translateY(-2px) !important; color: #fff !important; }
 
-  .btn-primary {
-    background: var(--blue-cta); color: var(--white);
-    padding: 13px 26px; border-radius: var(--r); text-decoration: none;
-    font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;
-    box-shadow: 0 4px 20px rgba(26,111,196,0.45);
-    transition: background .2s, transform .15s, box-shadow .2s;
-    letter-spacing: 0.2px;
-  }
-  .btn-primary:hover { background: var(--blue-cta-hover); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(26,111,196,0.5); }
+.erba-lims .el-btn-ghost {
+  background: rgba(255,255,255,0.11) !important; color: #FFFFFF !important;
+  padding: 13px 22px !important; border-radius: 10px !important;
+  font-size: 0.88rem !important; font-weight: 600 !important;
+  display: inline-flex !important; align-items: center !important; gap: 8px !important;
+  border: 1.5px solid rgba(255,255,255,0.3) !important;
+  transition: background 0.2s, transform 0.15s !important;
+}
+.erba-lims .el-btn-ghost:hover { background: rgba(255,255,255,0.2) !important; transform: translateY(-2px) !important; color: #fff !important; }
 
-  .btn-ghost {
-    background: rgba(255,255,255,0.1); color: var(--white);
-    padding: 13px 22px; border-radius: var(--r); text-decoration: none;
-    font-size: 0.88rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;
-    border: 1.5px solid rgba(255,255,255,0.28);
-    transition: background .2s, border-color .2s, transform .15s;
-  }
-  .btn-ghost:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.55); transform: translateY(-2px); }
+.erba-lims .el-stats { display: flex !important; gap: 0 !important; margin-top: 38px !important; flex-wrap: wrap !important; }
+.erba-lims .el-stat { border-left: 2px solid rgba(255,255,255,0.18) !important; padding-left: 18px !important; margin-right: 28px !important; margin-top: 10px !important; }
+.erba-lims .el-stat-num { font-size: 1.6rem !important; font-weight: 800 !important; color: #FFFFFF !important; letter-spacing: -0.8px !important; }
+.erba-lims .el-stat-lbl { font-size: 0.71rem !important; color: rgba(255,255,255,0.52) !important; font-weight: 500 !important; margin-top: 2px !important; }
 
-  /* Hero stats */
-  .hero-stats { display: flex; gap: 0; margin-top: 40px; }
-  .hero-stat { border-left: 2px solid rgba(255,255,255,0.18); padding-left: 18px; margin-right: 28px; }
-  .hero-stat-num { font-size: 1.6rem; font-weight: 800; color: var(--white); letter-spacing: -0.8px; }
-  .hero-stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.52); font-weight: 500; margin-top: 2px; }
+.erba-lims .el-hero-right { position: relative !important; }
 
-  /* ════════════════════════════════════════
-     DASHBOARD CARD
-  ════════════════════════════════════════ */
-  .hero-visual { position: relative; }
+.erba-lims .el-dash {
+  background: #FFFFFF !important; border-radius: 18px !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.22), 0 2px 8px rgba(76,102,147,0.14) !important;
+  padding: 22px !important; position: relative !important; overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+.erba-lims .el-dash::before {
+  content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; height: 3px !important;
+  background: linear-gradient(90deg, #6A3DAA, #4C6693, #00A896) !important;
+}
+.erba-lims .el-dash-header { display: flex !important; align-items: center !important; justify-content: space-between !important; margin-bottom: 16px !important; }
+.erba-lims .el-dash-title { font-size: 0.8rem !important; font-weight: 700 !important; color: #2F4F7F !important; }
+.erba-lims .el-dash-live {
+  background: #E0F5F3 !important; color: #006D62 !important;
+  font-size: 0.67rem !important; font-weight: 700 !important; padding: 3px 10px !important; border-radius: 100px !important;
+  display: inline-flex !important; align-items: center !important; gap: 5px !important;
+}
+.erba-lims .el-dash-live::before {
+  content: '' !important; width: 5px !important; height: 5px !important;
+  background: #00A896 !important; border-radius: 50% !important; display: inline-block !important;
+  animation: erba-blink 1.5s infinite !important;
+}
+.erba-lims .el-metrics { display: grid !important; grid-template-columns: repeat(3,1fr) !important; gap: 9px !important; margin-bottom: 16px !important; }
+.erba-lims .el-metric { background: #F5F6F8 !important; border-radius: 8px !important; padding: 12px 9px !important; text-align: center !important; border: 1px solid #E8ECF2 !important; }
+.erba-lims .el-metric-val { font-size: 1.28rem !important; font-weight: 800 !important; color: #2F4F7F !important; }
+.erba-lims .el-metric-lbl { font-size: 0.61rem !important; color: #4A5568 !important; font-weight: 600 !important; margin-top: 2px !important; text-transform: uppercase !important; letter-spacing: 0.4px !important; }
+.erba-lims .el-bar-title { font-size: 0.67rem !important; font-weight: 700 !important; color: #4A5568 !important; margin-bottom: 9px !important; text-transform: uppercase !important; letter-spacing: 0.6px !important; }
+.erba-lims .el-bar-row { display: flex !important; align-items: center !important; gap: 9px !important; margin-bottom: 7px !important; }
+.erba-lims .el-bar-lbl { font-size: 0.65rem !important; color: #4A5568 !important; width: 70px !important; flex-shrink: 0 !important; font-weight: 500 !important; }
+.erba-lims .el-bar-track { flex: 1 !important; background: #E8ECF2 !important; border-radius: 4px !important; height: 7px !important; overflow: hidden !important; }
+.erba-lims .el-bar-fill { height: 100% !important; border-radius: 4px !important; display: block !important; }
+.erba-lims .el-bar-pct { font-size: 0.65rem !important; font-weight: 700 !important; color: #2F4F7F !important; width: 28px !important; text-align: right !important; }
 
-  .dashboard-card {
-    background: var(--white); border-radius: var(--r-lg);
-    box-shadow: 0 28px 72px rgba(0,0,0,0.32), 0 4px 16px rgba(76,102,147,0.18);
-    padding: 22px; position: relative; overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-  .dashboard-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--purple-accent), var(--brand), var(--teal));
-  }
+.erba-lims .el-float {
+  position: absolute !important; background: #FFFFFF !important;
+  border-radius: 11px !important; box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
+  padding: 10px 14px !important; border: 1px solid #E8ECF2 !important;
+  display: flex !important; align-items: center !important; gap: 9px !important;
+  animation: erba-float 4s ease-in-out infinite !important;
+  will-change: transform !important;
+}
+.erba-lims .el-float-2 { animation-delay: 2s !important; }
+.erba-lims .el-float-top { top: -20px !important; right: -16px !important; }
+.erba-lims .el-float-bot { bottom: -20px !important; left: -22px !important; }
+.erba-lims .el-float-icon { width: 32px !important; height: 32px !important; border-radius: 7px !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 1rem !important; flex-shrink: 0 !important; }
+.erba-lims .el-float-txt { font-size: 0.67rem !important; }
+.erba-lims .el-float-txt strong { display: block !important; font-weight: 700 !important; color: #2F4F7F !important; }
+.erba-lims .el-float-txt span { color: #4A5568 !important; }
 
-  .dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .dash-title { font-size: 0.8rem; font-weight: 700; color: var(--brand-dark); }
-  .dash-live {
-    background: var(--teal-light); color: #006D62;
-    font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 100px;
-    display: flex; align-items: center; gap: 5px;
-  }
-  .dash-live::before {
-    content: ''; width: 5px; height: 5px; background: var(--teal);
-    border-radius: 50%; animation: blink 1.5s infinite;
-  }
+.erba-lims .el-logos { padding: 30px 5vw !important; background: #FFFFFF !important; border-bottom: 1px solid #E8ECF2 !important; }
+.erba-lims .el-logos-inner { max-width: 1160px !important; margin: 0 auto !important; }
+.erba-lims .el-logos-lbl { text-align: center !important; font-size: 0.69rem !important; font-weight: 700 !important; color: #4C6693 !important; text-transform: uppercase !important; letter-spacing: 1.3px !important; margin-bottom: 16px !important; }
+.erba-lims .el-logos-row { display: flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; flex-wrap: wrap !important; }
+.erba-lims .el-logo-pill { background: #F5F6F8 !important; border: 1.5px solid #D0D7E3 !important; border-radius: 6px !important; padding: 7px 17px !important; font-size: 0.75rem !important; font-weight: 700 !important; color: #2F4F7F !important; transition: border-color 0.2s !important; }
+.erba-lims .el-logo-pill:hover { border-color: #4C6693 !important; }
 
-  .dash-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; margin-bottom: 16px; }
-  .dash-metric {
-    background: var(--page-bg); border-radius: 8px; padding: 12px 9px;
-    text-align: center; border: 1px solid var(--border-light);
-  }
-  .dash-metric-val { font-size: 1.3rem; font-weight: 800; color: var(--brand-dark); }
-  .dash-metric-lbl { font-size: 0.62rem; color: var(--slate); font-weight: 600; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
+.erba-lims .el-section { padding: 72px 5vw !important; }
+.erba-lims .el-section-inner { max-width: 1160px !important; margin: 0 auto !important; }
+.erba-lims .el-bg-white { background: #FFFFFF !important; }
+.erba-lims .el-bg-grey  { background: #F5F6F8 !important; }
+.erba-lims .el-bg-dark  { background: #2F4F7F !important; }
 
-  .dash-bar-title { font-size: 0.68rem; font-weight: 700; color: var(--slate); margin-bottom: 9px; text-transform: uppercase; letter-spacing: 0.6px; }
-  .bar-row { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
-  .bar-label { font-size: 0.66rem; color: var(--slate); width: 70px; flex-shrink: 0; font-weight: 500; }
-  .bar-track { flex: 1; background: var(--border-light); border-radius: 4px; height: 7px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 4px; }
-  .bar-pct { font-size: 0.66rem; font-weight: 700; color: var(--brand-dark); width: 28px; text-align: right; }
+.erba-lims .el-eyebrow {
+  display: inline-flex !important; align-items: center !important; gap: 7px !important;
+  font-size: 0.67rem !important; font-weight: 800 !important; text-transform: uppercase !important;
+  letter-spacing: 1.3px !important; color: #6A3DAA !important; margin-bottom: 10px !important;
+}
+.erba-lims .el-eyebrow::before { content: '' !important; width: 18px !important; height: 2px !important; background: #6A3DAA !important; border-radius: 2px !important; display: inline-block !important; }
 
-  /* Floating notification cards */
-  .float-card {
-    position: absolute; background: var(--white);
-    border-radius: 11px; box-shadow: 0 10px 30px rgba(0,0,0,0.16);
-    padding: 10px 14px; border: 1px solid var(--border-light);
-    display: flex; align-items: center; gap: 9px;
-    animation: floatY 4s ease-in-out infinite;
-  }
-  .float-card-2 { animation-delay: 2s; }
-  @keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-  .float-icon { width: 32px; height: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-  .float-txt { font-size: 0.68rem; }
-  .float-txt strong { display: block; font-weight: 700; color: var(--brand-dark); }
-  .float-txt span { color: var(--slate); }
-  .fc-top { top: -20px; right: -16px; }
-  .fc-bot { bottom: -20px; left: -22px; }
+.erba-lims .el-h2 {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-size: clamp(1.6rem, 3vw, 2.35rem) !important;
+  color: #2F4F7F !important; line-height: 1.22 !important; margin-bottom: 12px !important; font-weight: 600 !important;
+}
+.erba-lims .el-h2-white { color: #FFFFFF !important; }
+.erba-lims .el-sub { font-size: 0.94rem !important; color: #4A5568 !important; line-height: 1.78 !important; max-width: 530px !important; margin-bottom: 40px !important; }
+.erba-lims .el-sub-white { color: rgba(255,255,255,0.56) !important; }
 
-  /* ════════════════════════════════════════
-     LOGOS STRIP
-  ════════════════════════════════════════ */
-  .logos {
-    padding: 32px 5vw;
-    background: var(--white);
-    border-bottom: 1px solid var(--border-light);
-  }
-  .logos-inner { max-width: 1160px; margin: 0 auto; }
-  .logos-label {
-    text-align: center; font-size: 0.7rem; font-weight: 700;
-    color: var(--brand); text-transform: uppercase; letter-spacing: 1.3px; margin-bottom: 18px;
-  }
-  .logos-row { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
-  .logo-pill {
-    background: var(--page-bg); border: 1.5px solid var(--border);
-    border-radius: 6px; padding: 7px 17px;
-    font-size: 0.76rem; font-weight: 700; color: var(--brand-dark);
-    transition: border-color .2s, color .2s;
-  }
-  .logo-pill:hover { border-color: var(--brand); color: var(--brand); }
+.erba-lims .el-prob-grid { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)) !important; gap: 15px !important; }
+.erba-lims .el-prob-card {
+  background: #FFF5F5 !important; border: 1.5px solid #FDDCDC !important;
+  border-radius: 10px !important; padding: 20px !important;
+  display: flex !important; gap: 14px !important; align-items: flex-start !important;
+  transition: transform 0.2s !important;
+}
+.erba-lims .el-prob-card:hover { transform: translateY(-4px) !important; }
+.erba-lims .el-prob-icon { width: 38px !important; height: 38px !important; border-radius: 9px !important; background: #FDDCDC !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 1.1rem !important; }
+.erba-lims .el-prob-card h4 { font-size: 0.87rem !important; font-weight: 700 !important; color: #2F4F7F !important; margin-bottom: 5px !important; }
+.erba-lims .el-prob-card p  { font-size: 0.79rem !important; color: #4A5568 !important; line-height: 1.65 !important; }
 
-  /* ════════════════════════════════════════
-     SHARED SECTION STYLES
-  ════════════════════════════════════════ */
-  .section { padding: 76px 5vw; }
-  .section-inner { max-width: 1160px; margin: 0 auto; }
-  .bg-white { background: var(--white); }
-  .bg-page  { background: var(--page-bg); }
+.erba-lims .el-steps-grid {
+  display: grid !important; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)) !important;
+  gap: 2px !important; background: rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important; overflow: hidden !important;
+}
+.erba-lims .el-step { background: rgba(255,255,255,0.04) !important; padding: 24px 20px !important; border: 1px solid rgba(255,255,255,0.08) !important; transition: background 0.2s !important; cursor: pointer !important; }
+.erba-lims .el-step:hover { background: rgba(106,61,170,0.2) !important; }
+.erba-lims .el-step.el-step-active { background: rgba(26,111,196,0.28) !important; border-color: rgba(168,200,240,0.4) !important; }
+.erba-lims .el-step-num { display: inline-block !important; font-size: 0.64rem !important; font-weight: 800 !important; color: #C5D8F5 !important; letter-spacing: 1px !important; background: rgba(76,102,147,0.3) !important; padding: 3px 10px !important; border-radius: 100px !important; margin-bottom: 12px !important; }
+.erba-lims .el-step-icon { font-size: 1.6rem !important; margin-bottom: 11px !important; display: block !important; }
+.erba-lims .el-step h4 { font-size: 0.87rem !important; font-weight: 700 !important; color: #FFFFFF !important; margin-bottom: 6px !important; }
+.erba-lims .el-step p  { font-size: 0.77rem !important; color: rgba(255,255,255,0.5) !important; line-height: 1.65 !important; }
+.erba-lims .el-step-more { display: inline-block !important; margin-top: 10px !important; font-size: 0.68rem !important; color: #A8C8F0 !important; border-bottom: 1px solid rgba(168,200,240,0.35) !important; }
 
-  .section-eyebrow {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.3px;
-    color: var(--purple-accent); margin-bottom: 11px;
-  }
-  .section-eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--purple-accent); border-radius: 2px; }
+.erba-lims .el-step-panel { display: none !important; margin-top: 14px !important; background: #FFFFFF !important; border-radius: 14px !important; overflow: hidden !important; box-shadow: 0 4px 20px rgba(47,79,127,0.12) !important; }
+.erba-lims .el-step-panel.open { display: block !important; }
+.erba-lims .el-panel-head { background: #2F4F7F !important; padding: 20px 24px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 16px !important; }
+.erba-lims .el-panel-head-left { display: flex !important; align-items: center !important; gap: 13px !important; }
+.erba-lims .el-panel-icon { width: 42px !important; height: 42px !important; border-radius: 10px !important; background: rgba(255,255,255,0.12) !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 1.3rem !important; flex-shrink: 0 !important; }
+.erba-lims .el-panel-badge { display: block !important; font-size: 0.61rem !important; font-weight: 800 !important; color: #A8C8F0 !important; letter-spacing: 1px !important; background: rgba(76,102,147,0.5) !important; padding: 2px 10px !important; border-radius: 100px !important; margin-bottom: 5px !important; width: fit-content !important; }
+.erba-lims .el-panel-title { font-size: 0.97rem !important; font-weight: 700 !important; color: #FFFFFF !important; margin: 0 !important; }
+.erba-lims .el-panel-close { background: rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.18) !important; color: rgba(255,255,255,0.8) !important; width: 30px !important; height: 30px !important; border-radius: 50% !important; cursor: pointer !important; font-size: 1.1rem !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; line-height: 1 !important; transition: background 0.2s !important; }
+.erba-lims .el-panel-close:hover { background: rgba(255,255,255,0.2) !important; }
+.erba-lims .el-panel-body { padding: 22px 24px 24px !important; }
+.erba-lims .el-panel-desc { font-size: 0.82rem !important; color: #4A5568 !important; line-height: 1.75 !important; margin-bottom: 18px !important; padding-bottom: 16px !important; border-bottom: 1px solid #E8ECF2 !important; }
+.erba-lims .el-panel-items { display: flex !important; flex-direction: column !important; gap: 10px !important; }
+.erba-lims .el-panel-item { display: flex !important; align-items: flex-start !important; gap: 13px !important; padding: 13px 15px !important; background: #F5F6F8 !important; border: 1.5px solid #E8ECF2 !important; border-radius: 10px !important; transition: border-color 0.2s !important; }
+.erba-lims .el-panel-item:hover { border-color: #C5D8F5 !important; }
+.erba-lims .el-panel-item-num { width: 24px !important; height: 24px !important; border-radius: 50% !important; background: #E3EBF6 !important; color: #2F4F7F !important; font-size: 0.68rem !important; font-weight: 800 !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; margin-top: 1px !important; }
+.erba-lims .el-panel-item-title { font-size: 0.83rem !important; font-weight: 700 !important; color: #2F4F7F !important; margin: 0 0 3px !important; }
+.erba-lims .el-panel-item-desc { font-size: 0.76rem !important; color: #4A5568 !important; margin: 0 !important; line-height: 1.55 !important; }
 
-  h2 {
-    font-family: 'Source Serif 4', serif;
-    font-size: clamp(1.65rem, 3vw, 2.4rem);
-    color: var(--brand-dark); line-height: 1.22; margin-bottom: 13px;
-  }
-  .section-sub { font-size: 0.95rem; color: var(--slate); line-height: 1.78; max-width: 530px; margin-bottom: 42px; }
+.erba-lims .el-feat-grid { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)) !important; gap: 15px !important; }
+.erba-lims .el-feat-card {
+  background: #FFFFFF !important; border: 1.5px solid #E8ECF2 !important;
+  border-radius: 10px !important; padding: 24px !important;
+  transition: border-color 0.2s, transform 0.2s !important;
+  position: relative !important; overflow: hidden !important;
+}
+.erba-lims .el-feat-card::after { content: '' !important; position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; height: 2px !important; background: linear-gradient(90deg, #6A3DAA, #4C6693, #00A896) !important; transform: scaleX(0) !important; transition: transform 0.3s !important; transform-origin: left !important; }
+.erba-lims .el-feat-card:hover { border-color: #4C6693 !important; transform: translateY(-4px) !important; }
+.erba-lims .el-feat-card:hover::after { transform: scaleX(1) !important; }
+.erba-lims .el-feat-icon { width: 44px !important; height: 44px !important; border-radius: 10px !important; background: #E3EBF6 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 1.3rem !important; margin-bottom: 14px !important; }
+.erba-lims .el-feat-card h4 { font-size: 0.87rem !important; font-weight: 700 !important; color: #2F4F7F !important; margin-bottom: 6px !important; }
+.erba-lims .el-feat-card p  { font-size: 0.78rem !important; color: #4A5568 !important; line-height: 1.65 !important; }
 
-  /* ════════════════════════════════════════
-     PROBLEM CARDS
-  ════════════════════════════════════════ */
-  .problems-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px,1fr)); gap: 16px; }
-  .problem-card {
-    background: var(--red-bg); border: 1.5px solid var(--red-border);
-    border-radius: var(--r); padding: 20px;
-    display: flex; gap: 14px; align-items: flex-start;
-    transition: transform .2s, box-shadow .2s;
-  }
-  .problem-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(220,38,38,0.08); }
-  .p-icon { width: 38px; height: 38px; border-radius: 9px; background: #FDDCDC; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-  .problem-card h4 { font-size: 0.88rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 5px; }
-  .problem-card p  { font-size: 0.8rem;  color: var(--slate); line-height: 1.65; }
+.erba-lims .el-mid-cta { text-align: center !important; margin-top: 46px !important; padding: 36px !important; background: #E3EBF6 !important; border-radius: 18px !important; border: 1.5px solid #C5D8F5 !important; }
+.erba-lims .el-mid-cta strong { display: block !important; font-size: 1rem !important; font-weight: 700 !important; color: #2F4F7F !important; margin-bottom: 5px !important; }
+.erba-lims .el-mid-cta p { font-size: 0.82rem !important; color: #4A5568 !important; margin-bottom: 20px !important; }
 
-  /* ════════════════════════════════════════
-     HOW IT WORKS  (dark brand bg)
-  ════════════════════════════════════════ */
-  .how { background: var(--brand-dark); padding: 76px 5vw; }
-  .how-inner { max-width: 1160px; margin: 0 auto; }
-  .how .section-eyebrow { color: #A8C8F0; }
-  .how .section-eyebrow::before { background: #A8C8F0; }
-  .how h2 { color: var(--white); }
-  .how .section-sub { color: rgba(255,255,255,0.56); }
+.erba-lims .el-table-wrap { border-radius: 18px !important; overflow: hidden !important; box-shadow: 0 2px 16px rgba(76,102,147,0.1) !important; }
+.erba-lims .el-table { width: 100% !important; border-collapse: collapse !important; }
+.erba-lims .el-table th, .erba-lims .el-table td { padding: 14px 20px !important; text-align: left !important; font-size: 0.82rem !important; }
+.erba-lims .el-table thead tr { background: #2F4F7F !important; }
+.erba-lims .el-table thead th { color: #FFFFFF !important; font-weight: 700 !important; }
+.erba-lims .el-table thead th:nth-child(2) { color: rgba(255,255,255,0.42) !important; }
+.erba-lims .el-table thead th:nth-child(3) { color: #A8C8F0 !important; }
+.erba-lims .el-table tbody tr { background: #FFFFFF !important; border-bottom: 1px solid #E8ECF2 !important; transition: background 0.15s !important; }
+.erba-lims .el-table tbody tr:hover { background: #E3EBF6 !important; }
+.erba-lims .el-table tbody tr:last-child { border-bottom: none !important; }
+.erba-lims .el-table td:first-child { font-weight: 600 !important; color: #2F4F7F !important; }
+.erba-lims .el-table td:nth-child(2) { color: #4A5568 !important; }
+.erba-lims .el-table td:nth-child(3) { color: #1A6FC4 !important; font-weight: 600 !important; }
 
-  .steps-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(225px,1fr));
-    gap: 2px; background: rgba(255,255,255,0.07);
-    border-radius: var(--r-lg); overflow: hidden;
-  }
-  .step { background: rgba(255,255,255,0.04); padding: 24px 20px; border: 1px solid rgba(255,255,255,0.08); transition: background .2s; }
-  .step:hover { background: rgba(106,61,170,0.2); }
-  .step-num {
-    display: inline-block; font-size: 0.65rem; font-weight: 800;
-    color: #C5D8F5; letter-spacing: 1px; background: rgba(76,102,147,0.3);
-    padding: 3px 10px; border-radius: 100px; margin-bottom: 13px;
-  }
-  .step-icon { font-size: 1.65rem; margin-bottom: 11px; }
-  .step h4 { font-size: 0.88rem; font-weight: 700; color: var(--white); margin-bottom: 6px; }
-  .step p  { font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.65; }
+.erba-lims .el-testi-grid { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)) !important; gap: 18px !important; }
+.erba-lims .el-testi-card {
+  background: #FFFFFF !important; border: 1.5px solid #E8ECF2 !important;
+  border-radius: 18px !important; padding: 26px !important;
+  position: relative !important; overflow: hidden !important;
+  transition: transform 0.2s !important;
+}
+.erba-lims .el-testi-card::before { content: '"' !important; font-family: Georgia, serif !important; font-size: 5.5rem !important; line-height: 1 !important; color: #E3EBF6 !important; position: absolute !important; top: 8px !important; right: 18px !important; pointer-events: none !important; }
+.erba-lims .el-testi-card:hover { transform: translateY(-4px) !important; }
+.erba-lims .el-stars { color: #F6C90E !important; font-size: 0.85rem !important; letter-spacing: 2px !important; margin-bottom: 12px !important; display: block !important; }
+.erba-lims .el-testi-card blockquote { font-size: 0.84rem !important; color: #4A5568 !important; line-height: 1.8 !important; margin-bottom: 18px !important; font-style: italic !important; border: none !important; background: none !important; padding: 0 !important; }
+.erba-lims .el-testi-author { display: flex !important; align-items: center !important; gap: 11px !important; }
+.erba-lims .el-avatar { width: 40px !important; height: 40px !important; border-radius: 50% !important; background: linear-gradient(135deg, #4C6693, #6A3DAA) !important; display: flex !important; align-items: center !important; justify-content: center !important; color: #fff !important; font-weight: 800 !important; font-size: 0.82rem !important; flex-shrink: 0 !important; }
+.erba-lims .el-tname { font-size: 0.81rem !important; font-weight: 700 !important; color: #2F4F7F !important; display: block !important; }
+.erba-lims .el-trole { font-size: 0.72rem !important; color: #4A5568 !important; display: block !important; }
 
-  /* ════════════════════════════════════════
-     FEATURE CARDS
-  ════════════════════════════════════════ */
-  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(265px,1fr)); gap: 16px; }
-  .feat-card {
-    background: var(--white); border: 1.5px solid var(--border-light);
-    border-radius: var(--r); padding: 24px;
-    transition: border-color .2s, transform .2s, box-shadow .2s;
-    position: relative; overflow: hidden;
-  }
-  .feat-card::after {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--purple-accent), var(--brand), var(--teal));
-    transform: scaleX(0); transition: transform .3s; transform-origin: left;
-  }
-  .feat-card:hover { border-color: var(--brand); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(76,102,147,0.14); }
-  .feat-card:hover::after { transform: scaleX(1); }
-  .feat-icon {
-    width: 44px; height: 44px; border-radius: 10px;
-    background: var(--blue-light); display: flex; align-items: center;
-    justify-content: center; font-size: 1.3rem; margin-bottom: 15px;
-  }
-  .feat-card h4 { font-size: 0.88rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 7px; }
-  .feat-card p  { font-size: 0.79rem; color: var(--slate); line-height: 1.65; }
+.erba-lims .el-who-grid { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)) !important; gap: 13px !important; }
+.erba-lims .el-who-card { background: #FFFFFF !important; border: 1.5px solid #E8ECF2 !important; border-radius: 10px !important; padding: 20px !important; transition: border-color 0.2s, transform 0.2s !important; }
+.erba-lims .el-who-card:hover { border-color: #4C6693 !important; transform: translateY(-3px) !important; }
+.erba-lims .el-who-icon { font-size: 1.55rem !important; display: block !important; margin-bottom: 8px !important; }
+.erba-lims .el-who-card h4 { font-size: 0.85rem !important; font-weight: 700 !important; color: #2F4F7F !important; margin-bottom: 5px !important; }
+.erba-lims .el-who-card p  { font-size: 0.77rem !important; color: #4A5568 !important; line-height: 1.6 !important; }
 
-  /* Mid-page CTA box */
-  .mid-cta {
-    text-align: center; margin-top: 48px;
-    padding: 36px; background: var(--blue-light);
-    border-radius: var(--r-lg); border: 1.5px solid #C5D8F5;
-  }
-  .mid-cta strong { display: block; font-size: 1rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 5px; }
-  .mid-cta p { font-size: 0.83rem; color: var(--slate); margin-bottom: 20px; }
+.erba-lims .el-faq-list { max-width: 720px !important; margin: 0 auto !important; }
+.erba-lims .el-faq-item { border-bottom: 1px solid #E8ECF2 !important; }
+.erba-lims .el-faq-q {
+  padding: 16px 0 !important; cursor: pointer !important;
+  display: flex !important; align-items: center !important; justify-content: space-between !important;
+  font-size: 0.87rem !important; font-weight: 600 !important; color: #2F4F7F !important;
+  transition: color 0.2s !important; gap: 16px !important; user-select: none !important;
+}
+.erba-lims .el-faq-q:hover { color: #6A3DAA !important; }
+.erba-lims .el-faq-arrow { width: 24px !important; height: 24px !important; border-radius: 6px !important; background: #F5F6F8 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 0.74rem !important; transition: transform 0.3s, background 0.2s !important; flex-shrink: 0 !important; color: #4C6693 !important; }
+.erba-lims .el-faq-item.open .el-faq-arrow { transform: rotate(180deg) !important; background: #E3EBF6 !important; color: #6A3DAA !important; }
+.erba-lims .el-faq-a { max-height: 0 !important; overflow: hidden !important; transition: max-height 0.35s ease !important; }
+.erba-lims .el-faq-a-inner { padding: 0 0 16px !important; font-size: 0.82rem !important; color: #4A5568 !important; line-height: 1.8 !important; }
+.erba-lims .el-faq-item.open .el-faq-a { max-height: 200px !important; }
 
-  /* ════════════════════════════════════════
-     COMPARISON TABLE
-  ════════════════════════════════════════ */
-  .compare-wrap { border-radius: var(--r-lg); overflow: hidden; box-shadow: 0 4px 24px rgba(76,102,147,0.12); }
-  .compare-table { width: 100%; border-collapse: collapse; }
-  .compare-table th, .compare-table td { padding: 14px 20px; text-align: left; font-size: 0.83rem; }
-  .compare-table thead tr { background: var(--brand-dark); }
-  .compare-table thead th { color: var(--white); font-weight: 700; }
-  .compare-table thead th:nth-child(2) { color: rgba(255,255,255,0.42); }
-  .compare-table thead th:nth-child(3) { color: #A8C8F0; }
-  .compare-table tbody tr { background: var(--white); border-bottom: 1px solid var(--border-light); transition: background .15s; }
-  .compare-table tbody tr:hover { background: var(--blue-light); }
-  .compare-table tbody tr:last-child { border-bottom: none; }
-  .compare-table td:first-child { font-weight: 600; color: var(--brand-dark); }
-  .compare-table td:nth-child(2) { color: var(--slate); }
-  .compare-table td:nth-child(3) { color: var(--blue-cta); font-weight: 600; }
+.erba-lims .el-cta-banner {
+  position: relative !important; overflow: hidden !important;
+  background: linear-gradient(148deg, #243D62 0%, #4C6693 55%, #3D618F 100%) !important;
+  padding: 72px 5vw !important; text-align: center !important;
+}
+.erba-lims .el-cta-banner::after {
+  content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; height: 4px !important;
+  background: linear-gradient(90deg, #6A3DAA, #9B6DD6, #00A896) !important;
+}
+.erba-lims .el-cta-banner::before {
+  content: '' !important; position: absolute !important; inset: 0 !important; pointer-events: none !important;
+  background: radial-gradient(circle at 12% 80%, rgba(106,61,170,0.2) 0%, transparent 50%), radial-gradient(circle at 88% 20%, rgba(26,111,196,0.18) 0%, transparent 50%) !important;
+}
+.erba-lims .el-cta-inner { position: relative !important; max-width: 640px !important; margin: 0 auto !important; }
+.erba-lims .el-cta-banner h2 { font-family: 'Source Serif 4', Georgia, serif !important; color: #FFFFFF !important; font-size: clamp(1.85rem, 3.6vw, 2.8rem) !important; margin-bottom: 13px !important; font-weight: 600 !important; }
+.erba-lims .el-cta-banner p { color: rgba(255,255,255,0.72) !important; font-size: 0.95rem !important; line-height: 1.78 !important; margin-bottom: 30px !important; }
+.erba-lims .el-cta-btns { display: flex !important; gap: 13px !important; justify-content: center !important; flex-wrap: wrap !important; }
+.erba-lims .el-btn-white { background: #FFFFFF !important; color: #2F4F7F !important; padding: 13px 28px !important; border-radius: 10px !important; font-size: 0.9rem !important; font-weight: 700 !important; display: inline-flex !important; align-items: center !important; gap: 8px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.16) !important; transition: transform 0.15s !important; border: none !important; }
+.erba-lims .el-btn-white:hover { transform: translateY(-2px) !important; color: #2F4F7F !important; }
+.erba-lims .el-btn-outline { background: transparent !important; color: #FFFFFF !important; padding: 13px 24px !important; border-radius: 10px !important; font-size: 0.9rem !important; font-weight: 600 !important; display: inline-flex !important; align-items: center !important; gap: 8px !important; border: 1.5px solid rgba(255,255,255,0.38) !important; transition: background 0.2s, transform 0.15s !important; }
+.erba-lims .el-btn-outline:hover { background: rgba(255,255,255,0.1) !important; border-color: rgba(255,255,255,0.7) !important; transform: translateY(-2px) !important; color: #fff !important; }
+.erba-lims .el-cta-trust { margin-top: 16px !important; font-size: 0.72rem !important; color: rgba(255,255,255,0.38) !important; display: block !important; }
 
-  /* ════════════════════════════════════════
-     TESTIMONIALS
-  ════════════════════════════════════════ */
-  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px,1fr)); gap: 20px; }
-  .testi-card {
-    background: var(--white); border: 1.5px solid var(--border-light);
-    border-radius: var(--r-lg); padding: 28px;
-    position: relative; transition: box-shadow .2s, transform .2s;
-    overflow: hidden;
-  }
-  .testi-card::before {
-    content: '"'; font-family: 'Source Serif 4', serif;
-    font-size: 5.5rem; line-height: 1; color: var(--blue-light);
-    position: absolute; top: 10px; right: 20px; pointer-events: none;
-  }
-  .testi-card:hover { box-shadow: 0 14px 44px rgba(76,102,147,0.14); transform: translateY(-4px); }
-  .testi-stars { color: var(--yellow); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 13px; }
-  .testi-card blockquote { font-size: 0.85rem; color: var(--slate); line-height: 1.8; margin-bottom: 20px; font-style: italic; }
-  .testi-author { display: flex; align-items: center; gap: 11px; }
-  .testi-avatar {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--brand), var(--purple-accent));
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 800; font-size: 0.82rem; flex-shrink: 0;
-  }
-  .testi-name { font-size: 0.82rem; font-weight: 700; color: var(--brand-dark); }
-  .testi-role { font-size: 0.72rem; color: var(--slate); }
+/* ── FORM SECTION STYLES ── */
+.erba-lims .el-form-section {
+  padding: 72px 5vw !important;
+  background: #FFFFFF !important;
+  border-top: 1px solid #E8ECF2 !important;
+}
+.erba-lims .el-form-wrap {
+  max-width: 1160px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 64px !important;
+  align-items: start !important;
+}
+.erba-lims .el-form-left { padding-top: 8px !important; }
+.erba-lims .el-form-left .el-sub { margin-bottom: 32px !important; }
+.erba-lims .el-form-trust-list { display: flex !important; flex-direction: column !important; gap: 14px !important; }
+.erba-lims .el-form-trust-item {
+  display: flex !important; align-items: flex-start !important; gap: 13px !important;
+}
+.erba-lims .el-form-trust-icon {
+  width: 36px !important; height: 36px !important; border-radius: 9px !important;
+  background: #E3EBF6 !important; display: flex !important; align-items: center !important;
+  justify-content: center !important; font-size: 1rem !important; flex-shrink: 0 !important;
+}
+.erba-lims .el-form-trust-text strong {
+  display: block !important; font-size: 0.84rem !important;
+  font-weight: 700 !important; color: #2F4F7F !important; margin-bottom: 2px !important;
+}
+.erba-lims .el-form-trust-text span {
+  font-size: 0.76rem !important; color: #4A5568 !important; line-height: 1.55 !important;
+}
+.erba-lims .el-form-card {
+  background: #F5F6F8 !important;
+  border: 1.5px solid #E8ECF2 !important;
+  border-radius: 18px !important;
+  padding: 36px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.erba-lims .el-form-card::before {
+  content: '' !important; position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; height: 3px !important;
+  background: linear-gradient(90deg, #6A3DAA, #1A6FC4, #00A896) !important;
+}
+.erba-lims .el-form-title {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-size: 1.3rem !important; font-weight: 600 !important;
+  color: #2F4F7F !important; margin-bottom: 5px !important;
+}
+.erba-lims .el-form-subtitle {
+  font-size: 0.78rem !important; color: #4A5568 !important;
+  margin-bottom: 24px !important; line-height: 1.6 !important;
+}
+.erba-lims .el-field-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+  margin-bottom: 14px !important;
+}
+.erba-lims .el-field { display: flex !important; flex-direction: column !important; gap: 5px !important; }
+.erba-lims .el-field-full { margin-bottom: 14px !important; }
+.erba-lims .el-label {
+  font-size: 0.72rem !important; font-weight: 700 !important;
+  color: #2F4F7F !important; letter-spacing: 0.3px !important;
+}
+.erba-lims .el-label span { color: #E53E3E !important; margin-left: 2px !important; }
+.erba-lims .el-input,
+.erba-lims .el-select,
+.erba-lims .el-textarea {
+  width: 100% !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #D0D7E3 !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-family: 'Raleway', Arial, sans-serif !important;
+  font-size: 0.82rem !important;
+  color: #1C2B40 !important;
+  outline: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+.erba-lims .el-input::placeholder,
+.erba-lims .el-textarea::placeholder { color: #A0AEC0 !important; }
+.erba-lims .el-input:focus,
+.erba-lims .el-select:focus,
+.erba-lims .el-textarea:focus {
+  border-color: #1A6FC4 !important;
+  box-shadow: 0 0 0 3px rgba(26,111,196,0.12) !important;
+}
+.erba-lims .el-select-wrap { position: relative !important; }
+.erba-lims .el-select-wrap::after {
+  content: '▾' !important; position: absolute !important;
+  right: 13px !important; top: 50% !important; transform: translateY(-50%) !important;
+  font-size: 0.75rem !important; color: #4C6693 !important; pointer-events: none !important;
+}
+.erba-lims .el-textarea { resize: vertical !important; min-height: 88px !important; }
+.erba-lims .el-checkbox-row {
+  display: flex !important; align-items: flex-start !important;
+  gap: 10px !important; margin-bottom: 22px !important; cursor: pointer !important;
+}
+.erba-lims .el-checkbox {
+  width: 17px !important; height: 17px !important; border: 1.5px solid #D0D7E3 !important;
+  border-radius: 4px !important; flex-shrink: 0 !important; margin-top: 1px !important;
+  background: #FFFFFF !important; appearance: none !important; -webkit-appearance: none !important;
+  cursor: pointer !important; transition: background 0.2s, border-color 0.2s !important;
+  position: relative !important;
+}
+.erba-lims .el-checkbox:checked {
+  background: #1A6FC4 !important; border-color: #1A6FC4 !important;
+}
+.erba-lims .el-checkbox:checked::after {
+  content: '✓' !important; position: absolute !important;
+  top: 50% !important; left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-size: 0.65rem !important; color: #FFFFFF !important; font-weight: 800 !important;
+}
+.erba-lims .el-checkbox-label {
+  font-size: 0.75rem !important; color: #4A5568 !important; line-height: 1.6 !important;
+}
+.erba-lims .el-checkbox-label a { color: #1A6FC4 !important; text-decoration: underline !important; }
+.erba-lims .el-submit-btn {
+  width: 100% !important;
+  background: #1A6FC4 !important; color: #FFFFFF !important;
+  padding: 14px 26px !important; border-radius: 10px !important;
+  font-family: 'Raleway', Arial, sans-serif !important;
+  font-size: 0.9rem !important; font-weight: 700 !important;
+  display: flex !important; align-items: center !important; justify-content: center !important; gap: 9px !important;
+  box-shadow: 0 4px 16px rgba(26,111,196,0.38) !important;
+  border: none !important; cursor: pointer !important;
+  transition: background 0.2s, transform 0.15s !important;
+}
+.erba-lims .el-submit-btn:hover { background: #155DA0 !important; transform: translateY(-2px) !important; }
+.erba-lims .el-submit-btn:disabled { background: #A0AEC0 !important; cursor: not-allowed !important; transform: none !important; box-shadow: none !important; }
+.erba-lims .el-form-note {
+  text-align: center !important; font-size: 0.69rem !important;
+  color: #718096 !important; margin-top: 12px !important; line-height: 1.6 !important;
+}
+.erba-lims .el-form-success {
+  display: none !important;
+  text-align: center !important; padding: 28px 20px !important;
+}
+.erba-lims .el-form-success.show { display: block !important; }
+.erba-lims .el-success-icon {
+  width: 56px !important; height: 56px !important; border-radius: 50% !important;
+  background: #E0F5F3 !important; display: flex !important; align-items: center !important;
+  justify-content: center !important; font-size: 1.6rem !important;
+  margin: 0 auto 16px !important;
+}
+.erba-lims .el-success-title {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-size: 1.2rem !important; font-weight: 600 !important;
+  color: #2F4F7F !important; margin-bottom: 8px !important;
+}
+.erba-lims .el-success-sub {
+  font-size: 0.82rem !important; color: #4A5568 !important; line-height: 1.7 !important;
+}
 
-  /* ════════════════════════════════════════
-     WHO IS IT FOR
-  ════════════════════════════════════════ */
-  .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(205px,1fr)); gap: 13px; }
-  .who-card {
-    background: var(--white); border: 1.5px solid var(--border-light);
-    border-radius: var(--r); padding: 20px;
-    transition: border-color .2s, transform .2s;
-  }
-  .who-card:hover { border-color: var(--brand); transform: translateY(-3px); }
-  .who-card .wi { font-size: 1.55rem; margin-bottom: 9px; }
-  .who-card h4 { font-size: 0.86rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 5px; }
-  .who-card p  { font-size: 0.78rem; color: var(--slate); line-height: 1.6; }
-
-  /* ════════════════════════════════════════
-     FAQ
-  ════════════════════════════════════════ */
-  .faq-list { max-width: 720px; margin: 0 auto; }
-  .faq-item { border-bottom: 1px solid var(--border-light); }
-  .faq-q {
-    padding: 17px 0; cursor: pointer;
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: 0.88rem; font-weight: 600; color: var(--brand-dark);
-    transition: color .2s; gap: 16px; user-select: none;
-  }
-  .faq-q:hover { color: var(--purple-accent); }
-  .faq-arrow {
-    width: 24px; height: 24px; border-radius: 6px; background: var(--page-bg);
-    display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
-    transition: transform .3s, background .2s; flex-shrink: 0; color: var(--brand);
-  }
-  .faq-item.open .faq-arrow { transform: rotate(180deg); background: var(--blue-light); color: var(--purple-accent); }
-  .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
-  .faq-a-inner { padding: 0 0 17px; font-size: 0.83rem; color: var(--slate); line-height: 1.8; }
-  .faq-item.open .faq-a { max-height: 200px; }
-
-  /* ════════════════════════════════════════
-     CTA BANNER
-  ════════════════════════════════════════ */
-  .cta-banner {
-    position: relative; overflow: hidden;
-    background: linear-gradient(148deg, var(--brand-deeper) 0%, var(--brand) 55%, #3D618F 100%);
-    padding: 72px 5vw; text-align: center;
-  }
-  /* Purple accent stripe top */
-  .cta-banner::after {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, var(--purple-accent), #9B6DD6, var(--teal));
-  }
-  .cta-banner::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none;
-    background:
-      radial-gradient(circle at 12% 80%, rgba(106,61,170,0.2) 0%, transparent 50%),
-      radial-gradient(circle at 88% 20%, rgba(26,111,196,0.18) 0%, transparent 50%);
-  }
-  .cta-inner { position: relative; max-width: 640px; margin: 0 auto; }
-  .cta-banner h2 { font-family: 'Source Serif 4', serif; color: var(--white); font-size: clamp(1.85rem, 3.6vw, 2.8rem); margin-bottom: 13px; }
-  .cta-banner p { color: rgba(255,255,255,0.72); font-size: 0.96rem; line-height: 1.78; margin-bottom: 32px; }
-  .cta-btns { display: flex; gap: 13px; justify-content: center; flex-wrap: wrap; }
-
-  .btn-white {
-    background: var(--white); color: var(--brand-dark);
-    padding: 13px 28px; border-radius: var(--r); text-decoration: none;
-    font-size: 0.9rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: transform .15s, box-shadow .2s;
-  }
-  .btn-white:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,0.26); }
-
-  .btn-outline {
-    background: transparent; color: var(--white);
-    padding: 13px 24px; border-radius: var(--r); text-decoration: none;
-    font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;
-    border: 1.5px solid rgba(255,255,255,0.38); transition: background .2s, border-color .2s, transform .15s;
-  }
-  .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.7); transform: translateY(-2px); }
-
-  .cta-trust { margin-top: 16px; font-size: 0.73rem; color: rgba(255,255,255,0.38); }
-
-  /* ════════════════════════════════════════
-     ANIMATIONS
-  ════════════════════════════════════════ */
-  @keyframes fadeUp { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
-  .hero-left > * { animation: fadeUp 0.55s ease both; }
-  .hero-left > *:nth-child(1) { animation-delay: .05s; }
-  .hero-left > *:nth-child(2) { animation-delay: .14s; }
-  .hero-left > *:nth-child(3) { animation-delay: .24s; }
-  .hero-left > *:nth-child(4) { animation-delay: .34s; }
-  .hero-left > *:nth-child(5) { animation-delay: .44s; }
-  .hero-visual { animation: fadeUp 0.75s ease .28s both; }
-
-  /* ════════════════════════════════════════
-     RESPONSIVE
-  ════════════════════════════════════════ */
-  @media (max-width: 840px) {
-    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
-    .hero-visual { display: none; }
-    .hero-stats { flex-wrap: wrap; gap: 14px; }
-  }
-  @media (max-width: 520px) {
-    .steps-grid { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 360px) {
-    .steps-grid { grid-template-columns: 1fr; }
-  }
+@media (max-width: 840px) {
+  .erba-lims .el-hero-inner { grid-template-columns: 1fr !important; gap: 36px !important; }
+  .erba-lims .el-hero-right { display: none !important; }
+  .erba-lims .el-form-wrap { grid-template-columns: 1fr !important; gap: 36px !important; }
+  .erba-lims .el-field-row { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 520px) {
+  .erba-lims .el-steps-grid { grid-template-columns: 1fr 1fr !important; }
+}
 </style>
-</head>
-<body>
 
-<!-- ══════════ HERO ══════════════════════════════════════════════ -->
-<section class="hero">
-  <div class="hb hb1"></div>
-  <div class="hb hb2"></div>
-  <div class="hero-inner">
+<div class="erba-lims">
 
-    <div class="hero-left">
-      <div class="hero-badge"><span class="dot"></span> Trusted by 100+ Labs Across Globe</div>
-      <h1>Manage Your Lab.<br><em>Automate</em> Everything Else.</h1>
-      <p class="hero-sub">From patient registration to WhatsApp report delivery — ERBA LIMS handles your entire pathology workflow in one connected system. No paperwork. No delays. No errors.</p>
-      <div class="hero-cta-group">
-        <a href="#demo" class="btn-primary">
+  <div class="el-hero">
+    <div class="el-blob el-blob-1"></div>
+    <div class="el-blob el-blob-2"></div>
+    <div class="el-hero-inner">
+      <div class="el-hero-left">
+        <div class="el-badge"><span class="el-dot"></span> Trusted by 100+ Labs Across Globe</div>
+        <h1 class="el-h1">Manage Your Lab.<br><em>Automate</em> Everything Else.</h1>
+        <p class="el-hero-sub">From patient registration to WhatsApp report delivery, ERBA LIMS handles your entire pathology workflow in one connected system. No paperwork. No delays. No errors.</p>
+        <div class="el-cta-group">
+          <a href="https://caredatainfo.com/schedule-a-demo/" class="el-btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
+            Book a Free Demo
+          </a>
+          <a href="#el-how" class="el-btn-ghost">
+            See How It Works
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="el-stats">
+          <div class="el-stat"><div class="el-stat-num">30 min</div><div class="el-stat-lbl">Avg. Report TAT</div></div>
+          <div class="el-stat"><div class="el-stat-num">99.8%</div><div class="el-stat-lbl">Sample Accuracy</div></div>
+          <div class="el-stat"><div class="el-stat-num">100+</div><div class="el-stat-lbl">Labs Onboarded</div></div>
+        </div>
+      </div>
+      <div class="el-hero-right">
+        <div class="el-dash">
+          <div class="el-dash-header">
+            <span class="el-dash-title">📊 Lab Dashboard — Today</span>
+            <span class="el-dash-live">Live</span>
+          </div>
+          <div class="el-metrics">
+            <div class="el-metric"><div class="el-metric-val">247</div><div class="el-metric-lbl">Samples</div></div>
+            <div class="el-metric"><div class="el-metric-val">96%</div><div class="el-metric-lbl">Delivered</div></div>
+            <div class="el-metric"><div class="el-metric-val">28m</div><div class="el-metric-lbl">Avg. TAT</div></div>
+          </div>
+          <div class="el-bar-title">Department Throughput</div>
+          <div class="el-bar-row"><span class="el-bar-lbl">Haematology</span><div class="el-bar-track"><span class="el-bar-fill" style="width:88%;background:#4C6693"></span></div><span class="el-bar-pct">88%</span></div>
+          <div class="el-bar-row"><span class="el-bar-lbl">Biochemistry</span><div class="el-bar-track"><span class="el-bar-fill" style="width:73%;background:#1A6FC4"></span></div><span class="el-bar-pct">73%</span></div>
+          <div class="el-bar-row"><span class="el-bar-lbl">Microbiology</span><div class="el-bar-track"><span class="el-bar-fill" style="width:61%;background:#6A3DAA"></span></div><span class="el-bar-pct">61%</span></div>
+          <div class="el-bar-row"><span class="el-bar-lbl">Histopath</span><div class="el-bar-track"><span class="el-bar-fill" style="width:45%;background:#00A896"></span></div><span class="el-bar-pct">45%</span></div>
+        </div>
+        <div class="el-float el-float-top">
+          <div class="el-float-icon" style="background:#E3EBF6">🏷️</div>
+          <div class="el-float-txt"><strong>Sample #LAB-2847</strong><span>Barcode scanned · In transit</span></div>
+        </div>
+        <div class="el-float el-float-2 el-float-bot">
+          <div class="el-float-icon" style="background:#E0F5F3">✅</div>
+          <div class="el-float-txt"><strong>Report Delivered</strong><span>WhatsApp · 28 min TAT</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-logos">
+    <div class="el-logos-inner">
+      <p class="el-logos-lbl">Integrates with major laboratory analyzers</p>
+      <div class="el-logos-row">
+        <span class="el-logo-pill">Sysmex</span>
+        <span class="el-logo-pill">Mindray</span>
+        <span class="el-logo-pill">Roche</span>
+        <span class="el-logo-pill">Beckman Coulter</span>
+        <span class="el-logo-pill">Abbott</span>
+        <span class="el-logo-pill">+ More</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-section el-bg-white">
+    <div class="el-section-inner">
+      <span class="el-eyebrow">The Problem</span>
+      <h2 class="el-h2">Why Manual Lab Management<br>Is Costing You Every Day</h2>
+      <p class="el-sub">If your lab still relies on paper registers, Excel sheets, or disconnected tools — you're dealing with avoidable problems daily.</p>
+      <div class="el-prob-grid">
+        <div class="el-prob-card"><div class="el-prob-icon">🔀</div><div><h4>Sample Mix-ups &amp; Lost Specimens</h4><p>Paper tracking leads to mislabeled tubes and wrong results. A single error costs you credibility.</p></div></div>
+        <div class="el-prob-card"><div class="el-prob-icon">⏳</div><div><h4>Slow Report Turnaround</h4><p>Manual entry and printing takes 2–6 hours. Patients wait, doctors follow up, and your reputation suffers.</p></div></div>
+        <div class="el-prob-card"><div class="el-prob-icon">⌨️</div><div><h4>Data Entry Errors</h4><p>Typing results manually multiplies mistake risk. Wrong values in final reports aren't just embarrassing — they're dangerous.</p></div></div>
+        <div class="el-prob-card"><div class="el-prob-icon">🌫️</div><div><h4>Zero Lab Visibility</h4><p>No easy way to see pending samples, delayed tests, or technician backlogs. You're always reactive, never proactive.</p></div></div>
+        <div class="el-prob-card"><div class="el-prob-icon">📋</div><div><h4>Compliance &amp; Audit Nightmares</h4><p>NABL and ISO 15189 demand complete documentation. Maintaining this manually is exhausting and full of gaps.</p></div></div>
+        <div class="el-prob-card"><div class="el-prob-icon">📈</div><div><h4>Can't Scale Without More Staff</h4><p>As test volumes grow, manual processes collapse. You hire more people just to keep up — not to grow.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-section el-bg-dark" id="el-how">
+    <div class="el-section-inner">
+      <span class="el-eyebrow" style="color:#A8C8F0 !important">How It Works</span>
+      <h2 class="el-h2 el-h2-white">From Registration to Report<br>in 7 Seamless Steps</h2>
+      <p class="el-sub el-sub-white" style="margin-bottom:34px">Every step in your lab workflow — connected, automated, and fully tracked.</p>
+      <div class="el-steps-grid" id="elStepsGrid">
+        <div class="el-step" onclick="elOpenStep(0)"><span class="el-step-num">STEP 01</span><span class="el-step-icon">👤</span><h4>Patient Registration</h4><p>Front desk captures patient details, doctor info, and test requests in one central record.</p><span class="el-step-more">View details ↗</span></div>
+        <div class="el-step" onclick="elOpenStep(1)"><span class="el-step-num">STEP 02</span><span class="el-step-icon">🏷️</span><h4>Barcode at Collection</h4><p>Each sample gets a unique barcode the moment it's collected. Manual paper tracking eliminated.</p><span class="el-step-more">View details ↗</span></div>
+        <div class="el-step" onclick="elOpenStep(2)"><span class="el-step-num">STEP 03</span><span class="el-step-icon">🔬</span><h4>Lab Receipt &amp; Processing</h4><p>Staff scan the barcode to confirm receipt and begin processing in the correct department.</p><span class="el-step-more">View details ↗</span></div>
+        <div class="el-step" onclick="elOpenStep(3)"><span class="el-step-num">STEP 04</span><span class="el-step-icon">⚙️</span><h4>Analyzer Integration</h4><p>Results auto-captured from Sysmex, Roche, Mindray, Abbott, and others. Zero manual typing.</p><span class="el-step-more">View details ↗</span></div>
+        <div class="el-step" onclick="elOpenStep(4)"><span class="el-step-num">STEP 05</span><span class="el-step-icon">✔️</span><h4>Result Validation</h4><p>Pathologists review and approve. Abnormal values are flagged automatically.</p><span class="el-step-more">View details ↗</span></div>
+        <div class="el-step" onclick="elOpenStep(5)"><span class="el-step-num">STEP 06</span><span class="el-step-icon">📄</span><h4>Report Generation</h4><p>Branded reports with reference ranges and digital signatures — generated automatically.</p><span class="el-step-more">View details ↗</span></div>
+        <div class="el-step" onclick="elOpenStep(6)"><span class="el-step-num">STEP 07</span><span class="el-step-icon">📲</span><h4>Digital Delivery</h4><p>Reports sent instantly via WhatsApp, email, or patient portal. No printing required.</p><span class="el-step-more">View details ↗</span></div>
+      </div>
+      <div class="el-step-panel" id="elStepPanel">
+        <div class="el-panel-head">
+          <div class="el-panel-head-left">
+            <div class="el-panel-icon" id="elPanelIcon"></div>
+            <div>
+              <span class="el-panel-badge" id="elPanelBadge"></span>
+              <h3 class="el-panel-title" id="elPanelTitle"></h3>
+            </div>
+          </div>
+          <button class="el-panel-close" onclick="elCloseStep()">×</button>
+        </div>
+        <div class="el-panel-body">
+          <p class="el-panel-desc" id="elPanelDesc"></p>
+          <div class="el-panel-items" id="elPanelItems"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-section el-bg-grey" id="el-features">
+    <div class="el-section-inner">
+      <span class="el-eyebrow">Features</span>
+      <h2 class="el-h2">Everything Your Lab Needs,<br>Built Into One System</h2>
+      <p class="el-sub">No third-party tools, no duct tape. ERBA LIMS covers your full workflow from day one.</p>
+      <div class="el-feat-grid">
+        <div class="el-feat-card"><div class="el-feat-icon">🏷️</div><h4>Barcode-Based Sample Tracking</h4><p>Every specimen tracked with a unique barcode from collection to report. Complete chain of custody.</p></div>
+        <div class="el-feat-card"><div class="el-feat-icon">🔗</div><h4>Analyzer Integration</h4><p>Direct connection to Sysmex, Mindray, Roche, Beckman Coulter, Abbott. Results auto-populate — zero manual entry.</p></div>
+        <div class="el-feat-card"><div class="el-feat-icon">📋</div><h4>Automated Report Generation</h4><p>Professional reports with your lab branding, reference ranges, and digital signatures — in seconds.</p></div>
+        <div class="el-feat-card"><div class="el-feat-icon">💬</div><h4>WhatsApp &amp; Email Delivery</h4><p>Approved reports reach patients and doctors the instant they're signed off. No printing, no waiting.</p></div>
+        <div class="el-feat-card"><div class="el-feat-icon">🏥</div><h4>Multi-Department Workflow</h4><p>Haematology, biochemistry, microbiology, histopathology — all from one unified system.</p></div>
+        <div class="el-feat-card"><div class="el-feat-icon">✅</div><h4>Quality Control &amp; Audit Trail</h4><p>Every action logged with timestamp and user ID. NABL and ISO 15189 records maintained automatically.</p></div>
+        <div class="el-feat-card"><div class="el-feat-icon">💰</div><h4>Billing &amp; Referral Management</h4><p>Generate invoices, manage referral commissions, and track outstanding payments — all built in.</p></div>
+        <div class="el-feat-card"><div class="el-feat-icon">🌐</div><h4>Multi-Branch Support</h4><p>Operate multiple lab locations from one central dashboard with consolidated reporting.</p></div>
+        <div class="el-feat-card"><div class="el-feat-icon">🔐</div><h4>Role-Based Access Control</h4><p>Front desk, technicians, pathologists, admins — each gets exactly the access they need.</p></div>
+      </div>
+      <div class="el-mid-cta">
+        <strong>Ready to see ERBA LIMS running your lab?</strong>
+        <p>Most labs are live within a few days. Full training included. No commitment required.</p>
+        <a href="https://caredatainfo.com/schedule-a-demo/" class="el-btn-primary" style="display:inline-flex">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
-          Book a Free Demo
-        </a>
-        <a href="#how-it-works" class="btn-ghost">
-          See How It Works
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Schedule a Free Demo
         </a>
       </div>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-num">30 min</div>
-          <div class="hero-stat-label">Avg. Report TAT</div>
+    </div>
+  </div>
+
+  <div class="el-section el-bg-white">
+    <div class="el-section-inner">
+      <span class="el-eyebrow">Why Switch</span>
+      <h2 class="el-h2">ERBA LIMS vs. Manual Management</h2>
+      <p class="el-sub">The difference isn't just convenience — it's accuracy, speed, and growth potential.</p>
+      <div class="el-table-wrap">
+        <table class="el-table">
+          <thead><tr><th>Capability</th><th>Manual / Spreadsheet</th><th>✓ ERBA LIMS</th></tr></thead>
+          <tbody>
+            <tr><td>Sample Tracking</td><td>Paper registers, error-prone</td><td>Barcode scan, real-time visibility</td></tr>
+            <tr><td>Result Entry</td><td>Manual typing, high error risk</td><td>Auto-captured from analyzer</td></tr>
+            <tr><td>Report Turnaround</td><td>2–6 hours average</td><td>Under 30 minutes</td></tr>
+            <tr><td>Report Delivery</td><td>Physical pickup or PDF on request</td><td>WhatsApp, email, patient portal</td></tr>
+            <tr><td>NABL Audit Readiness</td><td>Difficult, manual preparation</td><td>Audit trail maintained automatically</td></tr>
+            <tr><td>Multi-Branch Visibility</td><td>No central view</td><td>Single dashboard, all branches</td></tr>
+            <tr><td>Billing Management</td><td>Separate Excel or software</td><td>Built-in billing module</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-section el-bg-grey">
+    <div class="el-section-inner">
+      <span class="el-eyebrow">Customer Stories</span>
+      <h2 class="el-h2">Labs That Made the Switch</h2>
+      <p class="el-sub" style="margin-bottom:32px">Hear directly from pathologists and lab managers who transformed their operations.</p>
+      <div class="el-testi-grid">
+        <div class="el-testi-card">
+          <span class="el-stars">★★★★★</span>
+          <blockquote>Before CareData, we were entering results manually and reports were going out hours after processing. Now reports go out within 30 minutes of approval. Our patients and referring doctors noticed the difference immediately.</blockquote>
+          <div class="el-testi-author"><div class="el-avatar">PM</div><div><span class="el-tname"></span><span class="el-trole"> · Bengaluru</span></div></div>
         </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">99.8%</div>
-          <div class="hero-stat-label">Sample Accuracy</div>
+        <div class="el-testi-card">
+          <span class="el-stars">★★★★★</span>
+          <blockquote>The barcode tracking alone saved us from the sample mix-up problems we used to have. Now every sample has a clear record from collection to report — zero ambiguity, zero stress.</blockquote>
+          <div class="el-testi-author"><div class="el-avatar">RK</div><div><span class="el-tname"></span><span class="el-trole">Lab Manager · Lab, Hyderabad</span></div></div>
         </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">100+</div>
-          <div class="hero-stat-label">Labs Onboarded</div>
+        <div class="el-testi-card">
+          <span class="el-stars">★★★★★</span>
+          <blockquote>We needed proper audit trails for NABL accreditation. CareData gave us exactly what we needed — all quality records maintained automatically. The audit went smoothly.</blockquote>
+          <div class="el-testi-author"><div class="el-avatar">SA</div><div><span class="el-tname"></span><span class="el-trole">Designation · Lab, Pune</span></div></div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Live Dashboard Mockup -->
-    <div class="hero-visual">
-      <div class="dashboard-card">
-        <div class="dash-header">
-          <span class="dash-title">📊 Lab Dashboard — Today</span>
-          <span class="dash-live">Live</span>
-        </div>
-        <div class="dash-metrics">
-          <div class="dash-metric">
-            <div class="dash-metric-val">247</div>
-            <div class="dash-metric-lbl">Samples</div>
+  <!-- ═══════════════════════════════════════════════
+       FORM SECTION — Added between Testimonials and Who It's For
+       ═══════════════════════════════════════════════ -->
+  <div class="el-form-section" id="el-book-demo">
+    <div class="el-form-wrap">
+
+      <!-- Left: trust signals -->
+      <div class="el-form-left">
+        <span class="el-eyebrow">Book a Demo</span>
+        <h2 class="el-h2">See ERBA LIMS<br>Running Your Lab</h2>
+        <p class="el-sub">Fill in the form and our team will reach out within one business day to schedule a walkthrough built around your lab's workflow.</p>
+        <div class="el-form-trust-list">
+          <div class="el-form-trust-item">
+            <div class="el-form-trust-icon">📅</div>
+            <div class="el-form-trust-text">
+              <strong>Live demo, not a recorded video</strong>
+              <span>We walk you through the system in real time based on your lab type and test volume.</span>
+            </div>
           </div>
-          <div class="dash-metric">
-            <div class="dash-metric-val">96%</div>
-            <div class="dash-metric-lbl">Delivered</div>
+          <div class="el-form-trust-item">
+            <div class="el-form-trust-icon">⚙️</div>
+            <div class="el-form-trust-text">
+              <strong>Setup in a few days</strong>
+              <span>Most labs are fully operational within 3–5 working days. We handle the configuration.</span>
+            </div>
           </div>
-          <div class="dash-metric">
-            <div class="dash-metric-val">28m</div>
-            <div class="dash-metric-lbl">Avg. TAT</div>
+          <div class="el-form-trust-item">
+            <div class="el-form-trust-icon">🎓</div>
+            <div class="el-form-trust-text">
+              <strong>Full training for your team</strong>
+              <span>Front desk, technicians, and pathologists — everyone gets trained before you go live.</span>
+            </div>
           </div>
-        </div>
-        <div class="dash-bar-title">Department Throughput</div>
-        <div class="bar-row">
-          <span class="bar-label">Haematology</span>
-          <div class="bar-track"><div class="bar-fill" style="width:88%;background:linear-gradient(90deg,#4C6693,#7A98C4)"></div></div>
-          <span class="bar-pct">88%</span>
-        </div>
-        <div class="bar-row">
-          <span class="bar-label">Biochemistry</span>
-          <div class="bar-track"><div class="bar-fill" style="width:73%;background:linear-gradient(90deg,#1A6FC4,#58A6F0)"></div></div>
-          <span class="bar-pct">73%</span>
-        </div>
-        <div class="bar-row">
-          <span class="bar-label">Microbiology</span>
-          <div class="bar-track"><div class="bar-fill" style="width:61%;background:linear-gradient(90deg,#6A3DAA,#A87FD8)"></div></div>
-          <span class="bar-pct">61%</span>
-        </div>
-        <div class="bar-row">
-          <span class="bar-label">Histopath</span>
-          <div class="bar-track"><div class="bar-fill" style="width:45%;background:linear-gradient(90deg,#00A896,#4DCFBF)"></div></div>
-          <span class="bar-pct">45%</span>
-        </div>
-      </div>
-      <div class="float-card fc-top">
-        <div class="float-icon" style="background:#E3EBF6">🏷️</div>
-        <div class="float-txt">
-          <strong>Sample #LAB-2847</strong>
-          <span>Barcode scanned • In transit</span>
-        </div>
-      </div>
-      <div class="float-card float-card-2 fc-bot">
-        <div class="float-icon" style="background:#E0F5F3">✅</div>
-        <div class="float-txt">
-          <strong>Report Delivered</strong>
-          <span>WhatsApp • 28 min TAT</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ══════════ ANALYZER INTEGRATIONS ════════════════════════════ -->
-<section class="logos">
-  <div class="logos-inner">
-    <p class="logos-label">Integrates with major laboratory analyzers</p>
-    <div class="logos-row">
-      <div class="logo-pill">Sysmex</div>
-      <div class="logo-pill">Mindray</div>
-      <div class="logo-pill">Roche</div>
-      <div class="logo-pill">Beckman Coulter</div>
-      <div class="logo-pill">Abbott</div>
-      <div class="logo-pill">+ More</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ PROBLEMS ══════════════════════════════════════════ -->
-<section class="section bg-white">
-  <div class="section-inner">
-    <span class="section-eyebrow">The Problem</span>
-    <h2>Why Manual Lab Management<br>Is Costing You Every Day</h2>
-    <p class="section-sub">If your lab still relies on paper registers, Excel sheets, or disconnected tools — you're dealing with avoidable problems daily.</p>
-    <div class="problems-grid">
-      <div class="problem-card">
-        <div class="p-icon">🔀</div>
-        <div>
-          <h4>Sample Mix-ups & Lost Specimens</h4>
-          <p>Paper tracking leads to mislabeled tubes and wrong results linked to patients. A single error costs you credibility.</p>
-        </div>
-      </div>
-      <div class="problem-card">
-        <div class="p-icon">⏳</div>
-        <div>
-          <h4>Slow Report Turnaround</h4>
-          <p>Manual entry and printing takes 2–6 hours. Patients wait, doctors follow up, and your reputation suffers.</p>
-        </div>
-      </div>
-      <div class="problem-card">
-        <div class="p-icon">⌨️</div>
-        <div>
-          <h4>Data Entry Errors</h4>
-          <p>Typing results manually multiplies mistake risk. Wrong values in final reports aren't just embarrassing — they're dangerous.</p>
-        </div>
-      </div>
-      <div class="problem-card">
-        <div class="p-icon">🌫️</div>
-        <div>
-          <h4>Zero Lab Visibility</h4>
-          <p>No easy way to see pending samples, delayed tests, or technician backlogs. You're always reactive, never proactive.</p>
-        </div>
-      </div>
-      <div class="problem-card">
-        <div class="p-icon">📋</div>
-        <div>
-          <h4>Compliance & Audit Nightmares</h4>
-          <p>NABL and ISO 15189 demand complete documentation. Maintaining this manually is exhausting and full of gaps.</p>
-        </div>
-      </div>
-      <div class="problem-card">
-        <div class="p-icon">📈</div>
-        <div>
-          <h4>Can't Scale Without More Staff</h4>
-          <p>As test volumes grow, manual processes collapse. You hire more people just to keep up — not to grow.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ HOW IT WORKS ══════════════════════════════════════ -->
-<section class="how" id="how-it-works">
-  <div class="how-inner">
-    <span class="section-eyebrow">How It Works</span>
-    <h2>From Registration to Report<br>in 7 Seamless Steps</h2>
-    <p class="section-sub" style="margin-bottom:36px">Every step in your lab workflow — connected, automated, and fully tracked.</p>
-    <div class="steps-grid">
-      <div class="step">
-        <div class="step-num">STEP 01</div>
-        <div class="step-icon">👤</div>
-        <h4>Patient Registration</h4>
-        <p>Front desk captures patient details, doctor info, and test requests in one central record.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">STEP 02</div>
-        <div class="step-icon">🏷️</div>
-        <h4>Barcode at Collection</h4>
-        <p>Each sample gets a unique barcode the moment it's collected. Manual paper tracking eliminated.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">STEP 03</div>
-        <div class="step-icon">🔬</div>
-        <h4>Lab Receipt & Processing</h4>
-        <p>Staff scan the barcode to confirm receipt and begin processing in the correct department.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">STEP 04</div>
-        <div class="step-icon">⚙️</div>
-        <h4>Analyzer Integration</h4>
-        <p>Results auto-captured from Sysmex, Roche, Mindray, Abbott, and others. Zero manual typing.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">STEP 05</div>
-        <div class="step-icon">✔️</div>
-        <h4>Result Validation</h4>
-        <p>Pathologists review and approve. Abnormal values are flagged automatically for immediate attention.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">STEP 06</div>
-        <div class="step-icon">📄</div>
-        <h4>Report Generation</h4>
-        <p>Branded pathology reports with reference ranges and digital signatures — generated automatically.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">STEP 07</div>
-        <div class="step-icon">📲</div>
-        <h4>Digital Delivery</h4>
-        <p>Reports sent instantly via WhatsApp, email, or patient portal. No printing required.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ FEATURES ══════════════════════════════════════════ -->
-<section class="section bg-page" id="features">
-  <div class="section-inner">
-    <span class="section-eyebrow">Features</span>
-    <h2>Everything Your Lab Needs,<br>Built Into One System</h2>
-    <p class="section-sub">No third-party tools, no duct tape. ERBA LIMS covers your full workflow from day one.</p>
-    <div class="features-grid">
-      <div class="feat-card">
-        <div class="feat-icon">🏷️</div>
-        <h4>Barcode-Based Sample Tracking</h4>
-        <p>Every specimen tracked with a unique barcode from collection to report. Complete, tamper-proof chain of custody.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🔗</div>
-        <h4>Analyzer Integration</h4>
-        <p>Direct connection to Sysmex, Mindray, Roche, Beckman Coulter, Abbott. Results auto-populate — zero manual entry.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">📋</div>
-        <h4>Automated Report Generation</h4>
-        <p>Professional reports with your lab branding, reference ranges, and digital signatures — generated in seconds.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">💬</div>
-        <h4>WhatsApp & Email Delivery</h4>
-        <p>Approved reports reach patients and doctors the instant they're signed off. No printing, no waiting.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🏥</div>
-        <h4>Multi-Department Workflow</h4>
-        <p>Haematology, biochemistry, microbiology, histopathology — all managed from one unified system.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">✅</div>
-        <h4>Quality Control & Audit Trail</h4>
-        <p>Every action logged with timestamp and user ID. NABL and ISO 15189 records maintained automatically.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">💰</div>
-        <h4>Billing & Referral Management</h4>
-        <p>Generate invoices, manage referral commissions, and track outstanding payments — all built in.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🌐</div>
-        <h4>Multi-Branch Support</h4>
-        <p>Operate multiple lab locations from one central dashboard with consolidated reporting.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🔐</div>
-        <h4>Role-Based Access Control</h4>
-        <p>Front desk, technicians, pathologists, admins — each gets exactly the access they need.</p>
-      </div>
-    </div>
-
-    <!-- CTA 2 — mid page -->
-    <div class="mid-cta">
-      <strong>Ready to see ERBA LIMS running your lab?</strong>
-      <p>Most labs are live within a few days. Full training included. No commitment required.</p>
-      <a href="#demo" class="btn-primary" style="display:inline-flex">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
-        Schedule a Free Demo
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ COMPARISON ════════════════════════════════════════ -->
-<section class="section bg-white" id="compare">
-  <div class="section-inner">
-    <span class="section-eyebrow">Why Switch</span>
-    <h2>ERBA LIMS vs.<br>Manual Management</h2>
-    <p class="section-sub">The difference isn't just convenience — it's accuracy, speed, and growth potential.</p>
-    <div class="compare-wrap">
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th>Capability</th>
-            <th>Manual / Spreadsheet</th>
-            <th>✓ ERBA LIMS</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Sample Tracking</td>
-            <td>Paper registers, error-prone</td>
-            <td>Barcode scan, real-time visibility</td>
-          </tr>
-          <tr>
-            <td>Result Entry</td>
-            <td>Manual typing, high error risk</td>
-            <td>Auto-captured from analyzer</td>
-          </tr>
-          <tr>
-            <td>Report Turnaround</td>
-            <td>2–6 hours average</td>
-            <td>Under 30 minutes</td>
-          </tr>
-          <tr>
-            <td>Report Delivery</td>
-            <td>Physical pickup or PDF on request</td>
-            <td>WhatsApp, email, patient portal</td>
-          </tr>
-          <tr>
-            <td>NABL Audit Readiness</td>
-            <td>Difficult, manual preparation</td>
-            <td>Audit trail maintained automatically</td>
-          </tr>
-          <tr>
-            <td>Multi-Branch Visibility</td>
-            <td>No central view</td>
-            <td>Single dashboard, all branches</td>
-          </tr>
-          <tr>
-            <td>Billing Management</td>
-            <td>Separate Excel or software</td>
-            <td>Built-in billing module</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ TESTIMONIALS ══════════════════════════════════════ -->
-<section class="section bg-page">
-  <div class="section-inner">
-    <span class="section-eyebrow">Customer Stories</span>
-    <h2>Labs That Made the Switch</h2>
-    <p class="section-sub" style="margin-bottom:34px">Hear directly from pathologists and lab managers who transformed their operations.</p>
-    <div class="testimonials-grid">
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <blockquote>Before CareData, we were entering results manually and reports were going out hours after processing. Now reports go out within 30 minutes of approval. Our patients and referring doctors noticed the difference immediately.</blockquote>
-        <div class="testi-author">
-          <div class="testi-avatar">PM</div>
-          <div>
-            <div class="testi-name">Dr. Priya Menon</div>
-            <div class="testi-role">Pathologist • Bengaluru Diagnostics Centre</div>
+          <div class="el-form-trust-item">
+            <div class="el-form-trust-icon">🔒</div>
+            <div class="el-form-trust-text">
+              <strong>No commitment required</strong>
+              <span>The demo is free. No contracts, no credit card, no pressure.</span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <blockquote>The barcode tracking alone saved us from the sample mix-up problems we used to have. Now every sample has a clear record from collection to report — zero ambiguity, zero stress.</blockquote>
-        <div class="testi-author">
-          <div class="testi-avatar">RK</div>
-          <div>
-            <div class="testi-name">Rajesh Kumar</div>
-            <div class="testi-role">Lab Manager • Metro Health Lab, Hyderabad</div>
+
+      <!-- Right: form card -->
+      <div class="el-form-card">
+        <div id="elFormBody">
+          <p class="el-form-title">Request Your Free Demo</p>
+          <p class="el-form-subtitle">Takes less than 2 minutes. We'll do the rest.</p>
+
+          <div class="el-field-row">
+            <div class="el-field">
+              <label class="el-label">First Name <span>*</span></label>
+              <input type="text" class="el-input" id="elFName" placeholder="e.g. Priya" autocomplete="given-name">
+            </div>
+            <div class="el-field">
+              <label class="el-label">Last Name <span>*</span></label>
+              <input type="text" class="el-input" id="elLName" placeholder="e.g. Menon" autocomplete="family-name">
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <blockquote>We needed proper audit trails for NABL accreditation. CareData gave us exactly what we needed — all quality records maintained automatically. The audit went smoothly.</blockquote>
-        <div class="testi-author">
-          <div class="testi-avatar">SA</div>
-          <div>
-            <div class="testi-name">Sunita Agarwal</div>
-            <div class="testi-role">Quality Manager • Apollo Pathlab, Pune</div>
+
+          <div class="el-field-row">
+            <div class="el-field">
+              <label class="el-label">Work Email <span>*</span></label>
+              <input type="email" class="el-input" id="elEmail" placeholder="you@labname.com" autocomplete="email">
+            </div>
+            <div class="el-field">
+              <label class="el-label">Phone / WhatsApp <span>*</span></label>
+              <input type="tel" class="el-input" id="elPhone" placeholder="+91 98765 43210" autocomplete="tel">
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ══════════ WHO IS IT FOR ══════════════════════════════════════ -->
-<section class="section bg-white">
-  <div class="section-inner">
-    <span class="section-eyebrow">Who It's For</span>
-    <h2>Built for Every Type of<br>Pathology Operation</h2>
-    <p class="section-sub" style="margin-bottom:30px">Whether you process 100 or 5,000 tests a day, ERBA LIMS is configured around your workflow.</p>
-    <div class="who-grid">
-      <div class="who-card">
-        <div class="wi">🏛️</div>
-        <h4>Standalone Pathology Labs</h4>
-        <p>Moving away from paper or spreadsheet tracking for the first time.</p>
-      </div>
-      <div class="who-card">
-        <div class="wi">🧪</div>
-        <h4>Diagnostic Centres</h4>
-        <p>Managing multiple test departments under one roof with centralized control.</p>
-      </div>
-      <div class="who-card">
-        <div class="wi">🏥</div>
-        <h4>Hospital Laboratories</h4>
-        <p>Coordinating with clinical departments and nursing stations seamlessly.</p>
-      </div>
-      <div class="who-card">
-        <div class="wi">🌐</div>
-        <h4>Multi-Location Chains</h4>
-        <p>Centralized reporting and management across all branches from one dashboard.</p>
-      </div>
-      <div class="who-card">
-        <div class="wi">🎯</div>
-        <h4>NABL-Accredited Labs</h4>
-        <p>Labs preparing for or maintaining NABL and ISO 15189 certification.</p>
-      </div>
-    </div>
-  </div>
-</section>
+          <div class="el-field-full">
+            <div class="el-field">
+              <label class="el-label">Lab / Organisation Name <span>*</span></label>
+              <input type="text" class="el-input" id="elLab" placeholder="e.g. Bengaluru Diagnostics Centre" autocomplete="organization">
+            </div>
+          </div>
 
-<!-- ══════════ FAQ ════════════════════════════════════════════════ -->
-<section class="section bg-page" id="faq">
-  <div class="section-inner">
-    <span class="section-eyebrow" style="display:block;text-align:center;justify-content:center">FAQ</span>
-    <h2 style="text-align:center">Frequently Asked Questions</h2>
-    <p class="section-sub" style="text-align:center;max-width:480px;margin:0 auto 40px">Everything you need to know before getting started.</p>
-    <div class="faq-list">
-      <div class="faq-item open">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          What is LIMS in pathology laboratories?
-          <span class="faq-arrow">▾</span>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">LIMS is software that manages the complete lifecycle of a sample — from patient registration to report delivery. It centralizes sample tracking, result entry, report generation, and compliance documentation in one connected platform.</div>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          Is ERBA LIMS suitable for small labs?
-          <span class="faq-arrow">▾</span>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">Yes. The system works for both small single-location labs and large diagnostic chains. It is configured based on your test volume and workflow — not a fixed template. Whether you process 100 or 5,000 tests a day, the system scales with you.</div>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          Which laboratory analyzers does ERBA LIMS integrate with?
-          <span class="faq-arrow">▾</span>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">ERBA LIMS integrates with Sysmex, Mindray, Beckman Coulter, Roche, Abbott, and other major brands. If your analyzer model is not listed, contact us and we will confirm compatibility directly.</div>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          Is ERBA LIMS compliant with NABL and ISO 15189?
-          <span class="faq-arrow">▾</span>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">The system automatically maintains audit trails, QC records, and documentation in line with ISO 15189 requirements — so you are always audit-ready without any extra manual effort.</div>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          How long does setup take?
-          <span class="faq-arrow">▾</span>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">Most labs are operational within a few days. Setup includes configuring your test panels, departments, and workflows. We provide hands-on training for your entire team.</div>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          What happens if the internet goes down?
-          <span class="faq-arrow">▾</span>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">ERBA LIMS supports offline mode for core operations. Data syncs automatically when connectivity is restored — so lab work is never interrupted.</div>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          Can patients receive reports on WhatsApp?
-          <span class="faq-arrow">▾</span>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">Yes. Once a report is approved, it is sent automatically to the patient's WhatsApp number and email — no printing, no waiting for physical pickup.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+          <div class="el-field-row" style="margin-bottom:14px">
+            <div class="el-field">
+              <label class="el-label">Lab Type <span>*</span></label>
+              <div class="el-select-wrap">
+                <select class="el-select" id="elLabType">
+                  <option value="" disabled selected>Select lab type</option>
+                  <option>Standalone Pathology Lab</option>
+                  <option>Diagnostic Centre</option>
+                  <option>Hospital Laboratory</option>
+                  <option>Multi-Location Chain</option>
+                  <option>Research / Clinical Lab</option>
+                </select>
+              </div>
+            </div>
+            <div class="el-field">
+              <label class="el-label">Daily Test Volume</label>
+              <div class="el-select-wrap">
+                <select class="el-select" id="elVolume">
+                  <option value="" disabled selected>Select range</option>
+                  <option>Under 100 tests/day</option>
+                  <option>100 – 500 tests/day</option>
+                  <option>500 – 1,000 tests/day</option>
+                  <option>1,000 – 5,000 tests/day</option>
+                  <option>5,000+ tests/day</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-<!-- ══════════ CTA BANNER  (CTA 3) ═══════════════════════════════ -->
-<section class="cta-banner" id="demo">
-  <div class="cta-inner">
-    <h2>Your Lab Deserves Better<br>Than Spreadsheets</h2>
-    <p>Join 100+ pathology labs across the globe that have cut report turnaround time, eliminated sample errors, and sailed through NABL audits with ERBA LIMS.</p>
-    <div class="cta-btns">
-      <a href="mailto:demo@caredata.com" class="btn-white">📅 Book a Free Demo</a>
-      <a href="tel:+911800000000"       class="btn-outline">📞 Talk to an Expert</a>
+          <div class="el-field-full">
+            <div class="el-field">
+              <label class="el-label">Anything specific you want to see in the demo?</label>
+              <textarea class="el-textarea" id="elMessage" placeholder="e.g. How barcode tracking works, analyzer integration with Sysmex, NABL audit trail..."></textarea>
+            </div>
+          </div>
+
+          <label class="el-checkbox-row">
+            <input type="checkbox" class="el-checkbox" id="elConsent">
+            <span class="el-checkbox-label">I agree to be contacted by the CareData team. My details will not be shared with third parties. <a href="#">Privacy Policy</a></span>
+          </label>
+
+          <button class="el-submit-btn" id="elSubmitBtn" onclick="elSubmitForm()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
+            Book My Free Demo
+          </button>
+          <p class="el-form-note">🔒 Your data is secure. No spam. No commitment.</p>
+          <p class="el-form-note" id="elFormError" style="color:#E53E3E !important; display:none; margin-top:8px !important;"></p>
+        </div>
+
+        <!-- Success state -->
+        <div class="el-form-success" id="elFormSuccess">
+          <div class="el-success-icon">✅</div>
+          <p class="el-success-title">You're booked in!</p>
+          <p class="el-success-sub">Thanks — our team will reach out within one business day to confirm your demo time. Check your email (and spam folder, just in case).</p>
+        </div>
+      </div>
+
     </div>
-    <p class="cta-trust">No commitment required &nbsp;•&nbsp; Setup in days &nbsp;•&nbsp; Full training included</p>
   </div>
-</section>
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <div class="el-section el-bg-white">
+    <div class="el-section-inner">
+      <span class="el-eyebrow">Who It's For</span>
+      <h2 class="el-h2">Built for Every Type of Pathology Operation</h2>
+      <p class="el-sub" style="margin-bottom:28px">Whether you process 100 or 5,000 tests a day, ERBA LIMS is configured around your workflow.</p>
+      <div class="el-who-grid">
+        <div class="el-who-card"><span class="el-who-icon">🏛️</span><h4>Standalone Pathology Labs</h4><p>Moving away from paper or spreadsheet tracking for the first time.</p></div>
+        <div class="el-who-card"><span class="el-who-icon">🧪</span><h4>Diagnostic Centres</h4><p>Managing multiple test departments under one roof with centralized control.</p></div>
+        <div class="el-who-card"><span class="el-who-icon">🏥</span><h4>Hospital Laboratories</h4><p>Coordinating with clinical departments and nursing stations seamlessly.</p></div>
+        <div class="el-who-card"><span class="el-who-icon">🌐</span><h4>Multi-Location Chains</h4><p>Centralized reporting and management across all branches from one dashboard.</p></div>
+        <div class="el-who-card"><span class="el-who-icon">🎯</span><h4>NABL-Accredited Labs</h4><p>Labs preparing for or maintaining NABL and ISO 15189 certification.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-section el-bg-grey">
+    <div class="el-section-inner">
+      <span class="el-eyebrow" style="display:block;text-align:center;justify-content:center">FAQ</span>
+      <h2 class="el-h2" style="text-align:center">Frequently Asked Questions</h2>
+      <p class="el-sub" style="text-align:center;max-width:480px;margin:0 auto 38px">Everything you need to know before getting started.</p>
+      <div class="el-faq-list">
+        <div class="el-faq-item open">
+          <div class="el-faq-q" onclick="erbaToggle(this)">What is LIMS in pathology laboratories?<span class="el-faq-arrow">▾</span></div>
+          <div class="el-faq-a"><div class="el-faq-a-inner">LIMS is software that manages the complete lifecycle of a sample — from patient registration to report delivery. It centralizes sample tracking, result entry, report generation, and compliance documentation in one connected platform.</div></div>
+        </div>
+        <div class="el-faq-item">
+          <div class="el-faq-q" onclick="erbaToggle(this)">Is ERBA LIMS suitable for small labs?<span class="el-faq-arrow">▾</span></div>
+          <div class="el-faq-a"><div class="el-faq-a-inner">Yes. The system works for both small single-location labs and large diagnostic chains. It is configured based on your test volume and workflow — not a fixed template. Whether you process 100 or 5,000 tests a day, the system scales with you.</div></div>
+        </div>
+        <div class="el-faq-item">
+          <div class="el-faq-q" onclick="erbaToggle(this)">Which analyzers does ERBA LIMS integrate with?<span class="el-faq-arrow">▾</span></div>
+          <div class="el-faq-a"><div class="el-faq-a-inner">ERBA LIMS integrates with Sysmex, Mindray, Beckman Coulter, Roche, Abbott, and other major brands. If your analyzer model is not listed, contact us and we will confirm compatibility directly.</div></div>
+        </div>
+        <div class="el-faq-item">
+          <div class="el-faq-q" onclick="erbaToggle(this)">Is ERBA LIMS compliant with NABL and ISO 15189?<span class="el-faq-arrow">▾</span></div>
+          <div class="el-faq-a"><div class="el-faq-a-inner">The system automatically maintains audit trails, QC records, and documentation in line with ISO 15189 requirements — so you are always audit-ready without extra manual effort.</div></div>
+        </div>
+        <div class="el-faq-item">
+          <div class="el-faq-q" onclick="erbaToggle(this)">How long does setup take?<span class="el-faq-arrow">▾</span></div>
+          <div class="el-faq-a"><div class="el-faq-a-inner">Most labs are operational within a few days. Setup includes configuring your test panels, departments, and workflows. We provide hands-on training for your entire team.</div></div>
+        </div>
+        <div class="el-faq-item">
+          <div class="el-faq-q" onclick="erbaToggle(this)">Can patients receive reports on WhatsApp?<span class="el-faq-arrow">▾</span></div>
+          <div class="el-faq-a"><div class="el-faq-a-inner">Yes. Once a report is approved, it is sent automatically to the patient's WhatsApp number and email — no printing, no waiting for physical pickup.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-cta-banner">
+    <div class="el-cta-inner">
+      <h2>Your Lab Deserves Better<br>Than Spreadsheets</h2>
+      <p>Join 100+ pathology labs across the globe that have cut report turnaround time, eliminated sample errors, and sailed through NABL audits with ERBA LIMS.</p>
+      <div class="el-cta-btns">
+        <a href="#el-book-demo" class="el-btn-white">📅 Book a Free Demo</a>
+        <a href="tel:+971529253682" class="el-btn-outline">📞 Talk to an Expert</a>
+      </div>
+      <span class="el-cta-trust">No commitment required &nbsp;·&nbsp; Setup in days &nbsp;·&nbsp; Full training included</span>
+    </div>
+  </div>
+
+</div>
 
 <script>
-  function toggleFaq(el) {
-    const item = el.parentElement;
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
+function erbaToggle(el) {
+  var item = el.parentElement;
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.el-faq-item').forEach(function(i){ i.classList.remove('open'); });
+  if (!isOpen) item.classList.add('open');
+}
+
+var elStepsData = [
+  { num:'STEP 01', icon:'👤', title:'Patient Registration',
+    desc:'Multiple registration modes ensure every patient type is seamlessly onboarded into a single central record.',
+    items:[
+      {title:'Home Collection', desc:'Schedule a phlebotomist visit. Patient details and tests are entered before the technician arrives.'},
+      {title:'B2B Registration', desc:'Corporate and hospital partner accounts with bulk billing, custom report formats, and dedicated portals.'},
+      {title:'Camp Registration', desc:'Batch intake for health camps — register multiple patients with shared test packages and group billing.'},
+      {title:'Walk-in / OPD', desc:'Standard counter registration for direct patients, self-referred or referred by a doctor.'}
+    ]
+  },
+  { num:'STEP 02', icon:'🏷️', title:'Barcode at Collection',
+    desc:'Every sample is uniquely identified at the point of collection, creating a complete digital chain of custody.',
+    items:[
+      {title:'Auto-generated barcode', desc:'Printed instantly at collection — ties the sample to the patient record and all requested tests.'},
+      {title:'Multi-tube labelling', desc:'Different tube types (EDTA, SST, citrate) each get individual barcodes linked to the same requisition.'},
+      {title:'Mobile collection app', desc:'Home collection staff generate barcodes from the field app — no pre-printed labels required.'}
+    ]
+  },
+  { num:'STEP 03', icon:'🔬', title:'Lab Receipt & Processing',
+    desc:'The moment a sample enters the lab, its status updates in real time across all dashboards and workstations.',
+    items:[
+      {title:'Scan to confirm receipt', desc:'One scan logs arrival time, receiving staff, and department routing — automatically.'},
+      {title:'Smart department routing', desc:'Biochemistry, haematology, microbiology — samples queued to the correct workstation instantly.'},
+      {title:'TAT tracking begins', desc:'Turnaround timers start at receipt, flagging delayed samples before they become a complaint.'}
+    ]
+  },
+  { num:'STEP 04', icon:'⚙️', title:'Analyzer Integration',
+    desc:'Bidirectional analyzer connectivity eliminates transcription errors and reduces result entry time to zero.',
+    items:[
+      {title:'Bidirectional interface', desc:'Test orders sent to the analyzer; results return automatically — no manual entry on either end.'},
+      {title:'Supported brands', desc:'Sysmex, Roche, Mindray, Abbott, Beckman Coulter and more via HL7 / ASTM protocols.'},
+      {title:'Delta checks', desc:'Flags results that deviate from the patient\'s previous values for pathologist review.'}
+    ]
+  },
+  { num:'STEP 05', icon:'✔️', title:'Result Validation',
+    desc:'A structured validation workflow ensures no result reaches a patient without the appropriate clinical review.',
+    items:[
+      {title:'Auto-flag critical values', desc:'Results outside panic ranges are highlighted immediately and alert the pathologist on duty.'},
+      {title:'Pathologist approval', desc:'Single-click approval with digital signature — full audit trail and timestamp maintained.'},
+      {title:'Repeat / reflex testing', desc:'Pathologist can order a repeat or reflex test directly from the validation screen.'}
+    ]
+  },
+  { num:'STEP 06', icon:'📄', title:'Report Generation',
+    desc:'Professional, lab-branded reports generated in seconds with all clinical and compliance requirements met.',
+    items:[
+      {title:'Custom lab branding', desc:'Your logo, letterhead, doctor details, and accreditation info embedded in every report.'},
+      {title:'Age & sex-based ranges', desc:'Reference intervals adjust automatically based on each patient\'s age and sex.'},
+      {title:'Digital signature & QR', desc:'Each report carries a verifiable digital signature and QR code for instant authenticity checks.'}
+    ]
+  },
+  { num:'STEP 07', icon:'📲', title:'Digital Delivery',
+    desc:'Reports reach patients and referring doctors the moment they are approved — on every channel they prefer.',
+    items:[
+      {title:'WhatsApp delivery', desc:'PDF report sent to the patient\'s WhatsApp the instant the pathologist approves.'},
+      {title:'Email dispatch', desc:'Automated email to patient and/or referring doctor with branded PDF — no manual step.'},
+      {title:'Patient portal', desc:'Patients view, download, or share all their reports from any device at any time.'},
+      {title:'Doctor portal', desc:'Referring doctors see live results for all their patients in one real-time dashboard.'}
+    ]
   }
+];
+
+var elActiveIdx = -1;
+function elOpenStep(i) {
+  if (elActiveIdx === i) { elCloseStep(); return; }
+  var s = elStepsData[i];
+  document.getElementById('elPanelIcon').textContent = s.icon;
+  document.getElementById('elPanelBadge').textContent = s.num;
+  document.getElementById('elPanelTitle').textContent = s.title;
+  document.getElementById('elPanelDesc').textContent = s.desc;
+  document.getElementById('elPanelItems').innerHTML = s.items.map(function(it,n){
+    return '<div class="el-panel-item"><div class="el-panel-item-num">'+(n+1)+'</div><div><p class="el-panel-item-title">'+it.title+'</p><p class="el-panel-item-desc">'+it.desc+'</p></div></div>';
+  }).join('');
+  document.querySelectorAll('.el-step').forEach(function(e){ e.classList.remove('el-step-active'); });
+  document.querySelectorAll('.el-step')[i].classList.add('el-step-active');
+  var panel = document.getElementById('elStepPanel');
+  panel.classList.add('open');
+  elActiveIdx = i;
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function elCloseStep() {
+  document.getElementById('elStepPanel').classList.remove('open');
+  document.querySelectorAll('.el-step').forEach(function(e){ e.classList.remove('el-step-active'); });
+  elActiveIdx = -1;
+}
+
+/* ── FORM LOGIC ── */
+function elSubmitForm() {
+  var fname   = document.getElementById('elFName').value.trim();
+  var lname   = document.getElementById('elLName').value.trim();
+  var email   = document.getElementById('elEmail').value.trim();
+  var phone   = document.getElementById('elPhone').value.trim();
+  var lab     = document.getElementById('elLab').value.trim();
+  var labtype = document.getElementById('elLabType').value;
+  var consent = document.getElementById('elConsent').checked;
+  var errEl   = document.getElementById('elFormError');
+
+  errEl.style.display = 'none';
+
+  if (!fname || !lname) { elShowErr('Please enter your first and last name.'); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { elShowErr('Please enter a valid work email address.'); return; }
+  if (!phone) { elShowErr('Please enter a phone or WhatsApp number so we can reach you.'); return; }
+  if (!lab) { elShowErr('Please enter your lab or organisation name.'); return; }
+  if (!labtype) { elShowErr('Please select your lab type.'); return; }
+  if (!consent) { elShowErr('Please tick the consent checkbox to continue.'); return; }
+
+  var btn = document.getElementById('elSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  /* Replace with your actual form submission endpoint (e.g. Formspree, HubSpot, or your CRM API) */
+  setTimeout(function() {
+    document.getElementById('elFormBody').style.display = 'none';
+    document.getElementById('elFormSuccess').classList.add('show');
+  }, 900);
+}
+function elShowErr(msg) {
+  var e = document.getElementById('elFormError');
+  e.textContent = msg;
+  e.style.display = 'block';
+}
 </script>
-</body>
-</html>
